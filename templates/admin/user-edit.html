@@ -1,0 +1,476 @@
+{% extends "admin/dashboard-base.html" %}
+
+{% block head %}
+<style>
+    #avatar-preview {
+        /* object-fit: cover;
+        aspect-ratio: 1;
+
+        /* Optional: constrain image size */
+        /* max-block-size: 250px; */
+
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+        object-fit: cover;
+        object-position: center right;
+    }
+</style>
+
+<script>
+    const csrf = {
+        '{{ csrf.keys.name }}': "{{ csrf.name }}",
+        '{{ csrf.keys.value }}': "{{ csrf.value }}"
+    };
+    const id = Number('{{ id }}');
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('editUserForm', () => ({
+            userid: id,
+            cleave: null,
+            formMessage: "",
+            formMessageSuccess: "",
+            formLoading: false,
+            newPassword: "",
+            avatarUrl: "",
+            formData: {
+                username: "",
+                firstName: "",
+                lastName: "",
+                email: "",
+                date: "",
+                position: "",
+                status: "",
+                is_admin: false
+            },
+
+            init() {
+                this.cleave = new Cleave('#date', {
+                    date: true,
+                    delimiter: '-',
+                    datePattern: ['Y', 'm', 'd']
+                });
+
+                this.getUser();
+            },
+
+            resetFormData() {
+                this.formData.username = "";
+                this.formData.firstName = "";
+                this.formData.lastName = "";
+                this.formData.email = "";
+                this.formData.date = "";
+                this.formData.position = "phd";
+                this.formData.status = "active";
+                this.formData.is_admin = false;
+            },
+
+            getAvatarUrl() {
+                return `/media/avatar/${this.formData.username}.jpeg?${new Date().getTime()}`;
+            },
+
+            showImgPreview(event) {
+                var output = document.getElementById('avatar-preview');
+                if (event.target.files[0] === undefined) {
+                    this.avatarUrl = this.getAvatarUrl();
+                } else {
+                    output.src = URL.createObjectURL(event.target.files[0]);
+                    output.onload = function () {
+                        URL.revokeObjectURL(output.src);
+                    }
+                }
+            },
+
+            submitForm() {
+                this.formMessage = "";
+                this.formMessageSuccess = "";
+                this.formLoading = true;
+
+                const fileInput = document.querySelector('#avatar');
+                const mpFormData = new FormData();
+                mpFormData.append('id', this.userid);
+                for (var key in this.formData) {
+                    if (key === 'username') {
+                        continue;
+                    }
+                    mpFormData.append(key, this.formData[key]);
+                }
+                if (fileInput.value.trim().length) {
+                    mpFormData.append('avatar', fileInput.files[0]);
+                }
+                for (var key in csrf) {
+                    mpFormData.append(key, csrf[key]);
+                }
+
+                fetch('/api/update-user', {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                    body: mpFormData,
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            document.location.reload(true);
+                        } else if (response.status < 500 && response.status >= 400) {
+                            return response.json();
+                        } else {
+                            throw new Error('Server response was not OK');
+                        }
+                    })
+                    .then((response) => {
+                        if (response !== undefined) {
+                            this.formMessage = response.error_message;
+                        }
+                    })
+                    .catch((error) => {
+                        this.formMessage = "Something went wrong.";
+                    })
+                    .finally(() => {
+                        this.formLoading = false;
+                    });
+            },
+
+            getUser() {
+                this.formMessage = "";
+                this.formMessageSuccess = "";
+                this.formLoading = true;
+
+                fetch('/api/get-user/' + this.userid, {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            return response.json();
+                        } else if (response.status < 500 && response.status >= 400) {
+                            return response.json();
+                        } else {
+                            throw new Error('Server response was not OK');
+                        }
+                    })
+                    .then((response) => {
+                        if (response !== undefined) {
+                            if (response.error_message !== "") {
+                                this.formMessage = response.error_message;
+                            } else {
+                                this.formData = response.content[0];
+                                this.avatarUrl = this.getAvatarUrl();
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        this.formMessage = "Something went wrong.";
+                    })
+                    .finally(() => {
+                        this.formLoading = false;
+                    });
+            },
+
+            deleteUser() {
+                this.formMessage = "";
+                this.formMessageSuccess = "";
+                this.formLoading = true;
+
+                const mpFormData = new FormData();
+                for (var key in csrf) {
+                    mpFormData.append(key, csrf[key]);
+                }
+
+                fetch('/api/delete-user/' + this.userid, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                    body: mpFormData
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            //this.resetFormData();
+                            window.location.replace("/admin/users");
+                        } else if (response.status < 500 && response.status >= 400) {
+                            return response.json();
+                        } else {
+                            throw new Error('Server response was not OK');
+                        }
+                    })
+                    .then((response) => {
+                        if (response !== undefined) {
+                            if (response.error_message !== "") {
+                                this.formMessage = response.error_message;
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        this.formMessage = "Something went wrong.";
+                    })
+                    .finally(() => {
+                        this.formLoading = false;
+                    });
+            },
+
+            changePassword() {
+                this.formMessage = "";
+                this.formMessageSuccess = "";
+                this.formLoading = true;
+
+                const mpFormData = new FormData();
+                mpFormData.append('id', this.userid);
+                mpFormData.append('password', this.newPassword);
+                for (var key in csrf) {
+                    mpFormData.append(key, csrf[key]);
+                }
+
+                fetch('/api/change-password', {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                    body: mpFormData,
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            this.formMessageSuccess = "Password changed successfully";
+                        } else if (response.status < 500 && response.status >= 400) {
+                            return response.json();
+                        } else {
+                            throw new Error('Server response was not OK');
+                        }
+                    })
+                    .then((response) => {
+                        if (response !== undefined) {
+                            if (response.error_message !== "") {
+                                this.formMessage = response.error_message;
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        this.formMessage = "Something went wrong.";
+                    })
+                    .finally(() => {
+                        this.formLoading = false;
+                        this.newPassword = "";
+                    });
+            },
+
+            avatarDelete() {
+                this.formMessage = "";
+                this.formMessageSuccess = "";
+                this.formLoading = true;
+
+                const mpFormData = new FormData();
+                for (var key in csrf) {
+                    mpFormData.append(key, csrf[key]);
+                }
+
+                fetch('/api/delete-avatar/' + this.userid, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                    body: mpFormData
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            // this.avatarUrl = this.getAvatarUrl();
+                            document.location.reload(true);
+                        } else if (response.status < 500 && response.status >= 400) {
+                            return response.json();
+                        } else {
+                            throw new Error('Server response was not OK');
+                        }
+                    })
+                    .then((response) => {
+                        if (response !== undefined) {
+                            if (response.error_message !== "") {
+                                this.formMessage = response.error_message;
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        this.formMessage = "Something went wrong.";
+                    })
+                    .finally(() => {
+                        this.formLoading = false;
+                    });
+
+            }
+        }))
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div x-data="editUserForm" x-cloak>
+    <h2>Edit user</h2>
+    <hr />
+
+    <form @submit.prevent="submitForm">
+        <div class="alert alert-danger" role="alert" x-show="formMessage" x-text="formMessage"></div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert" x-show="formMessageSuccess"
+            x-text="formMessageSuccess">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+
+        <img id="avatar-preview" :src="avatarUrl" onerror="this.src='/static/img/default.png'">
+        <div class="row mb-3">
+            <label for="avatar" class="col-sm-2 col-form-label">Image</label>
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#avatarDeleteModal"
+                    :disabled="formLoading" x-text="formLoading ? 'Loading...' : 'Delete Avatar'">
+                </button>
+            </div>
+            <div class="col-sm-8">
+                <input type="file" class="form-control-file" accept="image/jpeg" id="avatar" name="avatar"
+                    @change="showImgPreview">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="username" class="col-sm-2 col-form-label">Username</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="username" name="username" required
+                    x-model="formData.username" , disabled>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="firstname" class="col-sm-2 col-form-label">First Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="firstname" name="firstName" required
+                    x-model="formData.firstName">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="lastname" class="col-sm-2 col-form-label">Last name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="lastname" name="lastName" required
+                    x-model="formData.lastName">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="email" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+                <input type="email" class="form-control" id="email" name="email" required x-model="formData.email">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="date" class="col-sm-2 col-form-label">Date</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="date" name="date" required x-model="formData.date">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="position" class="col-sm-2 col-form-label">Position</label>
+            <div class="col-sm-10">
+                <select class="form-select" id="position" name="position" x-model="formData.position">
+                    <option value="phd" selected>phd</option>
+                    <option value="msc">msc</option>
+                    <option value="bsc">bsc</option>
+                    <option value="other">other</option>
+                    <option value="prof">prof</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="status" class="col-sm-2 col-form-label">Status</label>
+            <div class="col-sm-10">
+                <select class="form-select" id="status" name="status" x-model="formData.status">
+                    <option value="active">active</option>
+                    <option value="alumni">alumni</option>
+                    <option value="blocked">blocked</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-10 offset-sm-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="is_admin" name="is_admin" value="1"
+                        x-model="formData.is_admin">
+                    <label class="form-check-label" for="is_admin">
+                        Admin
+                    </label>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" :disabled="formLoading"
+            x-text="formLoading ? 'Loading...' : 'Submit'"></button>
+    </form>
+
+    <div class="pt-3">
+        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#passwordModal"
+            :disabled="formLoading" x-text="formLoading ? 'Loading...' : 'Change Password'">
+        </button>
+    </div>
+
+    <div class="pt-3">
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+            :disabled="formLoading" x-text="formLoading ? 'Loading...' : 'Delete'">
+        </button>
+    </div>
+
+    <!-- delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Are you sure to delete this user?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" @click="deleteUser()" :disabled="formLoading"
+                        x-text="formLoading ? 'Loading...' : 'Delete'"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- avatar delete Modal -->
+    <div class="modal fade" id="avatarDeleteModal" tabindex="-1" aria-labelledby="avatarDeleteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="avatarDeleteModalLabel">Are you sure to delete avatar?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="avatarDelete()"
+                        :disabled="formLoading" x-text="formLoading ? 'Loading...' : 'Delete'"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- password Modal -->
+    <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordModalLabel">Enter new password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <label for="password" class="col-sm-2 col-form-label">Password</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="password" name="password"
+                                x-model="newPassword" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        @click="newPassword=''">Close</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="changePassword()"
+                        :disabled="formLoading" x-text="formLoading ? 'Loading...' : 'Change'"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

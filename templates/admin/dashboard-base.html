@@ -1,0 +1,47 @@
+{% extends "admin/base.html" %}
+
+{% set page_names = {
+'users': 'Users',
+'links': 'Links'
+} %}
+
+{% block base_head %}
+<style>
+    header {
+        border-bottom: 0.1rem solid #000000;
+        margin: 0.5rem;
+    }
+
+    .content {
+        border-left: 0.1rem solid #000000;
+    }
+</style>
+
+{% block head %}
+{% endblock head %}
+
+{% endblock base_head %}
+
+{% block base_content %}
+<header class="row">
+    <div class="col text-center">
+        <h1>{{site_info.site_name}} Admin</h1>
+    </div>
+</header>
+<main class="row">
+    <div class="col-2">
+        <div class="list-group">
+            {% for pid, pname in page_names %}
+            <a class="list-group-item list-group-item-action {{ pid == page_id ? 'active' : '' }}"
+                href="/admin/{{ pid }}">{{ pname }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-10">
+        <div class="content container-fluid">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </div>
+</main>
+{% endblock base_content %}

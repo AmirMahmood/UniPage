@@ -1,0 +1,221 @@
+{% extends "admin/dashboard-base.html" %}
+
+{% block head %}
+<style>
+    #avatar-preview {
+        /* object-fit: cover;
+        aspect-ratio: 1;
+
+        /* Optional: constrain image size */
+        /* max-block-size: 250px; */
+
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+        object-fit: cover;
+        object-position: center right;
+    }
+</style>
+
+<script>
+    const csrf = {
+        '{{ csrf.keys.name }}': "{{ csrf.name }}",
+        '{{ csrf.keys.value }}': "{{ csrf.value }}"
+    };
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('createUserForm', () => ({
+            cleave: null,
+            formMessage: "",
+            formLoading: false,
+            formData: {
+                username: "",
+                password: "",
+                firstName: "",
+                lastName: "",
+                email: "",
+                date: "",
+                position: "",
+                status: "",
+                is_admin: false
+            },
+
+            init() {
+                this.resetFormData();
+
+                this.cleave = new Cleave('#date', {
+                    date: true,
+                    delimiter: '-',
+                    datePattern: ['Y', 'm', 'd']
+                });
+            },
+
+            resetFormData() {
+                this.formData.username = "";
+                this.formData.password = "";
+                this.formData.firstName = "";
+                this.formData.lastName = "";
+                this.formData.email = "";
+                this.formData.date = "";
+                this.formData.position = "phd";
+                this.formData.status = "active";
+                this.formData.is_admin = false;
+            },
+
+            showImgPreview(event) {
+                var output = document.getElementById('avatar-preview');
+                if (event.target.files[0] === undefined) {
+                    output.src = "";
+                } else {
+                    output.src = URL.createObjectURL(event.target.files[0]);
+                    output.onload = function () {
+                        URL.revokeObjectURL(output.src);
+                    }
+                }
+            },
+
+            submitForm() {
+                this.formMessage = "";
+                this.formLoading = true;
+
+                const fileInput = document.querySelector('#avatar');
+                const mpFormData = new FormData();
+                for (var key in this.formData) {
+                    mpFormData.append(key, this.formData[key]);
+                }
+                if (fileInput.value.trim().length) {
+                    mpFormData.append('avatar', fileInput.files[0]);
+                }
+                for (var key in csrf) {
+                    mpFormData.append(key, csrf[key]);
+                }
+
+                fetch('/api/create-user', {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                    body: mpFormData,
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            this.resetFormData();
+                            window.location.replace("/admin/users");
+                        } else if (response.status < 500 && response.status >= 400) {
+                            return response.json();
+                        } else {
+                            throw new Error('Server response was not OK');
+                        }
+                    })
+                    .then((response) => {
+                        if (response !== undefined) {
+                            this.formMessage = response.error_message;
+                        }
+                    })
+                    .catch((error) => {
+                        this.formMessage = "Something went wrong.";
+                    })
+                    .finally(() => {
+                        this.formLoading = false;
+                    });
+            }
+        }))
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div>
+    <h2>Create New user</h2>
+    <hr />
+
+    <form x-data="createUserForm" @submit.prevent="submitForm" x-cloak>
+        <div class="alert alert-danger" role="alert" x-show="formMessage" x-text="formMessage"></div>
+
+
+        <img id="avatar-preview" onerror="this.src='/static/img/default.png'" src="">
+        <div class="row mb-3">
+            <label for="avatar" class="col-sm-2 col-form-label">Image</label>
+            <div class="col-sm-10">
+                <input type="file" class="form-control-file" accept="image/jpeg" id="avatar" name="avatar"
+                    @change="showImgPreview">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="username" class="col-sm-2 col-form-label">Username</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="username" name="username" required
+                    x-model="formData.username">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="password" class="col-sm-2 col-form-label">Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="password" name="password" x-model="formData.password"
+                    required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="firstname" class="col-sm-2 col-form-label">First Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="firstname" name="firstName" required
+                    x-model="formData.firstName">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="lastname" class="col-sm-2 col-form-label">Last name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="lastname" name="lastName" required
+                    x-model="formData.lastName">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="email" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+                <input type="email" class="form-control" id="email" name="email" required x-model="formData.email">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="date" class="col-sm-2 col-form-label">Date</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="date" name="date" required x-model="formData.date">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="position" class="col-sm-2 col-form-label">Position</label>
+            <div class="col-sm-10">
+                <select class="form-select" id="position" name="position" x-model="formData.position">
+                    <option value="phd" selected>phd</option>
+                    <option value="msc">msc</option>
+                    <option value="bsc">bsc</option>
+                    <option value="other">other</option>
+                    <option value="prof">prof</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="status" class="col-sm-2 col-form-label">Status</label>
+            <div class="col-sm-10">
+                <select class="form-select" id="status" name="status" x-model="formData.status">
+                    <option value="active">active</option>
+                    <option value="alumni">alumni</option>
+                    <option value="blocked">blocked</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-10 offset-sm-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="is_admin" name="is_admin" value="1"
+                        x-model="formData.is_admin">
+                    <label class="form-check-label" for="is_admin">
+                        Admin
+                    </label>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" :disabled="formLoading"
+            x-text="formLoading ? 'Loading...' : 'Submit'"></button>
+    </form>
+</div>
+{% endblock %}

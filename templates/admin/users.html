@@ -1,0 +1,55 @@
+{% extends "admin/dashboard-base.html" %}
+
+{% block head %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        var table = $('#table').DataTable({
+            ajax: {
+                url: '/api/get-users',
+                dataSrc: 'content'
+            },
+            columns: [
+                { data: 'id', 'visible': false },
+                { data: 'username' },
+                { data: 'firstName' },
+                { data: 'lastName' },
+                { data: 'position' },
+                { data: 'status' },
+                { data: 'is_admin' },
+                {
+                    data: null,
+                    defaultContent: '<button class="btn btn-sm btn-info">edit</button>',
+                    targets: -1
+                }
+            ]
+        });
+
+        $('#table tbody').on('click', 'button', function () {
+            var data = table.row($(this).parents('tr')).data();
+            window.location.replace("/admin/user-edit/" + data['id']);
+        });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div>
+    <a class="btn btn-secondary" role="button" href="/admin/user-create">New user</a>
+
+    <hr />
+
+    <table id="table" class="table table-bordered table-striped" width="100%">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Username</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Position</th>
+                <th>Status</th>
+                <th>is Admin</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+{% endblock %}

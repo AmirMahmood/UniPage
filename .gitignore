@@ -1,0 +1,9 @@
+.vscode/
+
+vendor/
+composer.lock
+
+var/
+config/settings.php
+
+todo.md
