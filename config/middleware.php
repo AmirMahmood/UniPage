@@ -14,9 +14,7 @@ return function (App $app) {
     $app->addErrorMiddleware(true, true, true);
 
     // Add Twig-View Middleware
-    $app->add(TwigMiddleware::createFromContainer($app));
-
-    $app->add('csrf');
+    $app->add(TwigMiddleware::class);
 
     // Remove TrailingSlash Middleware
     $app->add(function ($request, $handler) {

@@ -11,7 +11,7 @@ $settings = [
     'site_info' => [
         'site_name' => 'Unipage'
     ],
-    'session_lifetime_minute' => 5,
+    'session_lifetime_minute' => 30,
     'media_dir' => __DIR__ . '/../public/media',
     'twig' => [
         'template_dir' => __DIR__ . '/../templates',

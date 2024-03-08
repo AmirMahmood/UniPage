@@ -4,6 +4,7 @@ use Psr\Container\ContainerInterface;
 use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Views\Twig;
+use Slim\Views\TwigMiddleware;
 use Slim\Csrf\Guard;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
@@ -16,9 +17,9 @@ return [
         return require __DIR__ . '/settings.php';
     },
 
-    'view' => function (ContainerInterface $container) {
+    Twig::class => function (ContainerInterface $container) {
         $settings = $container->get('settings');
-        
+
         return Twig::create(
             $settings['twig']['template_dir'],
             [
@@ -27,7 +28,14 @@ return [
         );
     },
 
-    'orm' => function (ContainerInterface $container) {
+    TwigMiddleware::class => function (ContainerInterface $container) {
+        return TwigMiddleware::createFromContainer(
+            $container->get(App::class),
+            Twig::class
+        );
+    },
+
+    EntityManager::class => function (ContainerInterface $container) {
         $settings = $container->get('settings');
 
         // Use the ArrayAdapter or the FilesystemAdapter depending on the value of the 'dev_mode' setting
@@ -45,7 +53,7 @@ return [
         return EntityManager::create($settings['doctrine']['connection'], $config);
     },
 
-    'csrf' => function (ContainerInterface $container) {
+    Guard::class => function (ContainerInterface $container) {
         $app = AppFactory::createFromContainer($container);
         $responseFactory = $app->getResponseFactory();
         return new Guard($responseFactory, persistentTokenMode: true);

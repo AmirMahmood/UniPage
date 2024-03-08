@@ -15,10 +15,11 @@ $container = (new ContainerBuilder())
 
 // Session validity check
 $inactividad = $container->get('settings')['session_lifetime_minute'] * 60; // Session lifetime in seconds
-if (isset($_SESSION["timeout"])) {
+if (isset($_SESSION["user"]) && isset($_SESSION["timeout"])) {
     $sessionTTL = time() - $_SESSION["timeout"];
     if ($sessionTTL > $inactividad) {
         session_destroy();
+        session_start();
         header("Location: /");
     }
 }

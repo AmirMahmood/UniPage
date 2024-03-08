@@ -27,25 +27,35 @@
     document.addEventListener('alpine:init', () => {
         Alpine.data('editUserForm', () => ({
             userid: id,
-            cleave: null,
+            cleave_start: null,
+            cleave_end: null,
             formMessage: "",
             formMessageSuccess: "",
             formLoading: false,
             newPassword: "",
             avatarUrl: "",
+            avatarWidth: 0,
+            avatarHeight: 0,
             formData: {
                 username: "",
                 firstName: "",
                 lastName: "",
                 email: "",
-                date: "",
+                start_date: "",
+                end_date: "",
                 position: "",
                 status: "",
                 is_admin: false
             },
 
             init() {
-                this.cleave = new Cleave('#date', {
+                this.cleave_start = new Cleave('#start_date', {
+                    date: true,
+                    delimiter: '-',
+                    datePattern: ['Y', 'm', 'd']
+                });
+
+                this.cleave_end = new Cleave('#end_date', {
                     date: true,
                     delimiter: '-',
                     datePattern: ['Y', 'm', 'd']
@@ -59,7 +69,8 @@
                 this.formData.firstName = "";
                 this.formData.lastName = "";
                 this.formData.email = "";
-                this.formData.date = "";
+                this.formData.start_date = "";
+                this.formData.end_date = "";
                 this.formData.position = "phd";
                 this.formData.status = "active";
                 this.formData.is_admin = false;
@@ -73,7 +84,14 @@
                 var output = document.getElementById('avatar-preview');
                 if (event.target.files[0] === undefined) {
                     this.avatarUrl = this.getAvatarUrl();
+                    this.avatarWidth = 0;
+                    this.avatarHeight = 0;
                 } else {
+                    var image = new Image();
+                    image.src = URL.createObjectURL(event.target.files[0]);
+                    image.decode().resolve();
+                    alert(image.width);
+
                     output.src = URL.createObjectURL(event.target.files[0]);
                     output.onload = function () {
                         URL.revokeObjectURL(output.src);
@@ -82,6 +100,14 @@
             },
 
             submitForm() {
+                console.log(this.formData);
+
+                alert(this.avatarHeight);
+                if (this.ah != this.aw) {
+                    alert('Avatar image Height & Width must be equal')
+                    return;
+                }
+
                 this.formMessage = "";
                 this.formMessageSuccess = "";
                 this.formLoading = true;
@@ -96,7 +122,9 @@
                     mpFormData.append(key, this.formData[key]);
                 }
                 if (fileInput.value.trim().length) {
-                    mpFormData.append('avatar', fileInput.files[0]);
+                    f = fileInput.files[0];
+                    console.log(f);
+                    mpFormData.append('avatar', f);
                 }
                 for (var key in csrf) {
                     mpFormData.append(key, csrf[key]);
@@ -356,9 +384,16 @@
             </div>
         </div>
         <div class="row mb-3">
-            <label for="date" class="col-sm-2 col-form-label">Date</label>
+            <label for="start_date" class="col-sm-2 col-form-label">Start Date</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="date" name="date" required x-model="formData.date">
+                <input type="text" class="form-control" id="start_date" name="start_date" required
+                    x-model="formData.start_date">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="end_date" class="col-sm-2 col-form-label">End Date</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="end_date" name="end_date" x-model="formData.end_date">
             </div>
         </div>
         <div class="row mb-3">
