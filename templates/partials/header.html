@@ -1,0 +1,41 @@
+<!-- Header -->
+<header class='w3-row w3-text-white w3-bottombar w3-border-amber'
+    style='background-color: #003262; font-family: Raleway!important'>
+
+    <div style="width: 100%">
+        <div class="w3-bar w3-left-align w3-medium">
+            <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-red"
+                href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i
+                    class="fa fa-bars"></i></a>
+
+            {% for pid, pname in page_names %}
+            <a class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white {{ pid == page_id ? 'w3-red' : '' }}"
+                href="/{{ pid }}">{{ pname }}</a>
+            {% endfor %}
+        </div>
+
+        <div id="navSmall" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
+            {% for pid, pname in page_names %}
+            <a class="w3-bar-item w3-button w3-padding-large w3-hover-red {{ pid == page_id ? 'w3-red' : '' }}"
+                href="/{{ pid }}">{{ pname }}</a>
+            {% endfor %}
+        </div>
+
+        <div class='w3-row-padding w3-padding-64' style="font-family: Raleway!important">
+            <div class="w3-content">
+                <div class="w3-half w3-container">
+                    <h2 class="w3-raleway w3-xxlarge" style="margin-bottom: 0">DSD Lab <span class="w3-large">University
+                            of Tehran</span></h2>
+                    <p class="w3-medium">School of Electrical and Computer Engineering</p>
+                </div>
+
+                <div class="w3-half w3-container w3-center w3-animate-right">
+                    <h2 class="w3-xxxlarge w3-raleway-upper">- {{ page_names[page_id] }} -</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" class="w3-red w3-hover-blue" id="myBtn" title="Go to top"><i class="fa fa-chevron-up"
+            aria-hidden="true"></i></a>
+</header>

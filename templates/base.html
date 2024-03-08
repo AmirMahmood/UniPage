@@ -1,0 +1,104 @@
+{% set page_names = {
+'': 'Home',
+'people': 'People',
+'alumni': 'Alumni',
+'publications': 'Publications',
+'courses': 'Courses',
+'links': 'Useful Links'
+} %}
+
+<!doctype html>
+<html>
+
+<head>
+    <title>{{ page_names[page_id] }} | DSDLab, University of Tehran</title>
+
+    {% block head %}
+    {% endblock %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/static/img/favicon/apple-touch-icon-57x57.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/img/favicon/apple-touch-icon-114x114.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/img/favicon/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/static/img/favicon/apple-touch-icon-144x144.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="/static/img/favicon/apple-touch-icon-60x60.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/static/img/favicon/pple-touch-icon-120x120.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/static/img/favicon/apple-touch-icon-76x76.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/static/img/favicon/apple-touch-icon-152x152.png" />
+    <link rel="icon" type="image/png" href="/static/img/favicon/favicon-196x196.png" sizes="196x196" />
+    <link rel="icon" type="image/png" href="/static/img/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/png" href="/static/img/favicon/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/static/img/favicon/favicon-16x16.png" sizes="16x16" />
+    <link rel="icon" type="image/png" href="/static/img/favicon/favicon-128.png" sizes="128x128" />
+    <meta name="application-name" content="&nbsp;" />
+    <meta name="msapplication-TileColor" content="#FFFFFF" />
+    <meta name="msapplication-TileImage" content="/static/img/favicon/mstile-144x144.png" />
+    <meta name="msapplication-square70x70logo" content="/static/img/favicon/mstile-70x70.png" />
+    <meta name="msapplication-square150x150logo" content="/static/img/favicon/mstile-150x150.png" />
+    <meta name="msapplication-wide310x150logo" content="/static/img/favicon/mstile-310x150.png" />
+    <meta name="msapplication-square310x310logo" content="/static/img/favicon/mstile-310x310.png" />
+
+    <link href="/static/css/myGrid.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/text.css" rel="stylesheet" type="text/css">
+
+    <script src="/static/js/jquery-2.2.0.min.js"></script>
+    <script src="/static/js/scripts.js"></script>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Raleway:300,700' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+    </style>
+
+</head>
+
+
+<body>
+    <!--header-->
+    {% include page_id == '' ? 'partials/landing_header.html' : 'partials/header.html' %}
+    <!--header End-->
+
+    <!-- content -->
+    <!-- <div class="w3-row-padding w3-padding-32 w3-container w3-white w3-justify">
+        <div class="w3-content"> -->
+            {% block content %}
+            {% endblock %}
+        <!-- </div>
+    </div> -->
+    <!-- content End -->
+
+    <!--footer-->
+    <footer class="w3-row-padding" id="footer">
+        <div class="w3-container w3-hide-small" id="nav">
+            {% for pid, pname in page_names %}
+            <a class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white {{ pid == page_id ? 'w3-red' : '' }}"
+                href="/{{ pid }}">{{ pname }}
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="w3-row-padding w3-padding-large">
+            <img src="static/img/UT Logo.png">
+            <img src="static/img/FanniLogo[1].png">
+        </div>
+
+        <div class="w3-row-padding w3-padding-large">
+            <p>University of Tehran, School of Electrical and Computer Engineering</p>
+            <p class="no_underline">Copyright © 2024 DSD Lab</p>
+        </div>
+    </footer>
+    <!--footer End-->
+
+</body>
+
+</html>

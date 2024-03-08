@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="w3-row-padding w3-padding-32 w3-container w3-white w3-justify">
+	{% for p in users|filter(p => p.position == 'prof') -%}
+	<div class="w3-content">
+		<h1 class=" h2_style_2 w3-container">Lab Director</h1>
+		<div class="w3-half w3-container">
+			<img class="profile" src="/media/avatar/{{p.username}}.jpeg?{{ random() }}" onerror="this.src='/static/img/default.png'">
+			<h5>Dr. Siamak Mohammadi</h5>
+			<p class="w3-small" style="margin-bottom: 0">PhD (1999)</p>
+			<p class="w3-small">Assosiate Professor</p>
+			<p class="w3-small">Siamak Mohammadi received his BSc, MSc and PhD degrees from the University of Paris Sud
+				Orsay, France in 1990, 1992 and 1996, respectively, all in electrical engineering. During his PhD he was
+				supported by a grant from the Ministry of Education of France. From 1997 to 1999 he was a Research
+				Associate with the Department of Computer Science, University of Manchester, England. In 1999 he moved
+				to Canada and worked at Cogency Semiconductor Inc. in Toronto until 2003 and then at ATI Technologies
+				Inc. until 2005. Currently he is an Assistant Professor in School of Electrical and Computer
+				engineering, at the University of Tehran, Iran. He has over 15 years experience in VLSI digital area,
+				ASIC design and verification, asynchronous design, and on-chip interconnects in GALS NoCs. He has
+				contributed to the design of the first asynchronous ARM microprocessor, as well as several PowerLine
+				networking and RFID chips.
+			</p>
+		</div>
+		<div class="w3-half w3-container">
+			<h5>Contact</h5>
+			<p class="w3-small" style="margin: 0">University of Tehran</p>
+			<p class="w3-small" style="margin: 0">School of Electrical and Computer Engineering</p>
+			<p class="w3-small" style="margin: 0">North Kargar Ave</p>
+			<p class="w3-small" style="margin: 0">Tehran, Iran</p>
+			<p class="w3-small" style="margin: 0">PO Box: 14395/515</p>
+			<p class="w3-small" style="margin: 0">Phone: +98 21 61114306</p>
+			<p class="w3-small" style="margin: 0">smohamadi [at] ut [dot] ac [dot] ir</p>
+			</p>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

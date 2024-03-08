@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="first" class="w3-row-padding w3-padding-32 w3-container w3-white w3-justify">
+    <div class="w3-content">
+
+        <h1 class="w3-xlarge w3-container">Welcome to DSD lab</h1>
+        <div class="w3-twothird w3-container">
+
+            <p>Asynchronous design principles will play an increasingly important role in constructing future systems on
+                a chip, implemented in semiconductor technologies beyond 65 nanometers. These principles can be directly
+                used in the design of energy-efficient networks-on-chip and in chip communications in such systems.
+                Asynchronous design approach can also be used in cryptography systems, which must be secure and
+                reliable. Indeed, the lack of global clock encourages the use of such approach, where, thanks to
+                unconventional encodings, it will be practically impossible to analyze the energy spectrum of
+                cryptographic systems to find the key.</p>
+            <p>Verification of a digital design is one of the key factors to the success of chip design. Today, chips
+                are more complex than ever and this causes them to exhibit unexpected behaviors that could be fatal for
+                their productization in the market. Specifically, we are interested in verification of MPSoCs in one
+                hand and asynchronous circuits on the other. The microelectronic industry is using logic simulation and
+                formal or semi-formal methods to perform verification.</p>
+            <p>In DSD lab we do research in different areas to reach the bellow goals, leading to the design of
+                dependable systems, used in embedded systems for certain class of applications. We also look into design
+                of specific CAD tools which will facilitate our approach.</p>
+        </div>
+        <div class="w3-third w3-center w3-container">
+            <img src="/static/img/vlsi.jpg" style="width: 100%">
+        </div>
+    </div>
+</div>
+
+<div class="w3-row-padding w3-padding-32 w3-hide-medium w3-hide-small w3-light-grey">
+    <div class="w3-content">
+
+        <h1 class="w3-xlarge w3-container" style="margin-bottom: 0">Goals & Objectives</h1>
+
+        <div class="w3-row-padding">
+            <div class="w3-third">
+                <div class="w3-panel w3-margin-bottom w3-amber w3-container w3-padding">
+                    <p>Identifying undesirable factors and their effects on the functionality of digital systems.</p>
+                </div>
+            </div>
+            <div class="w3-third">
+                <div class="w3-panel w3-margin-bottom w3-amber w3-container w3-padding">
+                    <p>Proposing methods to eliminate these factors in order to establish the main features of a
+                        dependable system which are availability, reliability and integrity.</p>
+                </div>
+            </div>
+            <div class="w3-third">
+                <div class="w3-panel w3-margin-bottom w3-amber w3-container w3-padding">
+                    <p>Implementing CAD tools which allow the high level specification and design of dependable and
+                        energy-efficient VLSI systems by using asynchronous techniques.</p>
+                </div>
+            </div>
+            <!--         </div>
+-->
+            <!-- <div class="w3-row-padding"> -->
+            <div class="w3-third">
+                <div class="w3-panel w3-margin-bottom w3-amber w3-container w3-padding">
+                    <p>Synthesis of low latency and low power design. Proposing algorithms and digital circuitries to
+                        achieve low power, high speed and dependable integrated circuits.</p>
+                </div>
+            </div>
+            <div class="w3-third">
+                <div class="w3-panel w3-margin-bottom w3-amber w3-container w3-padding">
+                    <p>Design of on-chip communication links using special encoding to achieve better
+                        power-reliability-performance and noise robustness.</p>
+                </div>
+            </div>
+            <div class="w3-third">
+                <div class="w3-panel w3-margin-bottom w3-amber w3-container w3-padding">
+                    <p>Ensuring that what we mean to design corresponds to the chip's actual behavior. This can be done
+                        through Functional and Formal Verification.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="w3-row-padding w3-padding-64 w3-container w3-white w3-justify">
+    <div class="w3-content">
+        <div class="w3-container w3-half" id="">
+            <h1 class="w3-xlarge">Contact Us</h1>
+            <p class="w3-large">Dr. Siamak Mohammadi</p class="w3-large">
+            <p style="margin: 0">Dependable System Design Laboratory (Room No. 221)</p>
+            <p style="margin: 0">University of Tehran</p>
+            <p style="margin: 0">School of Electrical and Computer Engineering</p>
+            <p style="margin: 0">North Kargar Ave</p>
+            <p style="margin: 0">Tehran, Iran</p>
+            <p style="margin: 0">PO Box: 14395/515</p>
+            <p style="margin: 0">Phone: +98 21 61114306</p>
+            <p style="margin: 0">smohamadi [at] ut [dot] ac [dot] ir</p>
+        </div>
+        <div class="w3-container w3-half">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d809.7633521035882!2d51.386843!3d35.724905!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f8e017025c3bcb5%3A0xa29ed4e33429111b!2sSchool%20of%20electrical%20and%20computer%20engineering%20building%20%231!5e0!3m2!1sen!2sus!4v1709931039994!5m2!1sen!2sus"
+                width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </div>
+</div>
+{% endblock %}
