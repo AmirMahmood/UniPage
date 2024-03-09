@@ -25,7 +25,7 @@ if (isset($_SESSION["user"]) && isset($_SESSION["timeout"])) {
 }
 $_SESSION["timeout"] = time(); // Session lifetime in seconds
 
-date_default_timezone_set($container->get('settings')['timezone'])
+date_default_timezone_set($container->get('settings')['timezone']);
 
 // Run App
 $container->get(App::class)->run();
