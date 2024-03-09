@@ -79,7 +79,6 @@ final class User
         $this->position = $position;
         $this->status = $status;
         $this->is_admin = $is_admin;
-        $this->last_login = null;
         $this->last_modification = new DateTimeImmutable('now');
         $this->deleted = 0;
     }
