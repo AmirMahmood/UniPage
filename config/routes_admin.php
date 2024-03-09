@@ -156,8 +156,8 @@ function apiRoute(App $app)
 
             $query = $em->createQuery(
                 'UPDATE UniPage\Domain\User p
-            SET p.deleted=1
-            WHERE p.id = :id, p.last_modification= :last_modification'
+            SET p.deleted=1, p.last_modification=:last_modification
+            WHERE p.id = :id'
             )->setParameter('id', $id)->setParameter('last_modification', new DateTimeImmutable('now'));
             $content = $query->getResult();
 
