@@ -2,8 +2,8 @@
 
 ## Deployment
 * change your database Collation to `utf8mb4_general_ci`
-* in `php.ini` set `date.timezone`. for example `date.timezone = "Asia/Tehran"`. use [this list][2] for more timezones.
 * in `config` folder, rename `settings.php.sample` to `settings.php` and modify settings.
+* set `timezone` in `settings.php`. use [this timezones list][2].
 * Use `composer.json` to install dependencies with Composer (`composer update`)
 * Set `public` folder as your web server root directory.
 * open `/admin/install` and then `/admin/upgrade` urls for installing.

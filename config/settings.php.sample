@@ -12,6 +12,7 @@ $settings = [
         'site_name' => 'Unipage'
     ],
     'session_lifetime_minute' => 30,
+    'timezone' => 'Asia/Tehran',
     'media_dir' => __DIR__ . '/../public/media',
     'twig' => [
         'template_dir' => __DIR__ . '/../templates',
