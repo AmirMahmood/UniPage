@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use UniPage\utils\UserStatusEnum;
 
 return function (App $app) {
+    (require __DIR__ . '/dbrun.php')($app);
     (require __DIR__ . '/routes_admin.php')($app);
 
     $app->get('/', function (Request $request, Response $response, $args) {

@@ -1,10 +1,13 @@
 # UniPage
 
 ## Deployment
+* change your database Collation to `utf8mb4_general_ci`
 * in `php.ini` set `date.timezone`. for example `date.timezone = "Asia/Tehran"`. use [this list][2] for more timezones.
 * in `config` folder, rename `settings.php.sample` to `settings.php` and modify settings.
 * Use `composer.json` to install dependencies with Composer (`composer update`)
 * Set `public` folder as your web server root directory.
+* open `/admin/install` and then `/admin/upgrade` urls for installing.
+* after first install, a user with username `root` and password `root` will be created. login with this user to `/admin/login` and then **delete this user or change its' password**.
 
 ## Contribution
 This app is written with `slimframework` as web framework, `twig` as template engine and `doctrine` as ORM.
