@@ -62,11 +62,11 @@ final class User
         string $password,
         string $firstName,
         string $lastName,
-        string $email,
         string $start_date,
         string $position,
         string $status,
         bool $is_admin,
+        string $email = '',
         ...$args
     ) {
         $this->username = strtolower($username);
@@ -94,7 +94,7 @@ final class User
             'username', 'password', 'firstName', 'lastName', 'email', 'start_date', 'position', 'status', 'is_admin'
         );
         $empty_check = array(
-            'username', 'password', 'firstName', 'lastName', 'email', 'start_date', 'position', 'status', 'is_admin'
+            'username', 'password', 'firstName', 'lastName', 'start_date', 'position', 'status', 'is_admin'
         );
 
         User::_validate($data, $exist_check, $empty_check);
@@ -106,7 +106,7 @@ final class User
             'id', 'firstName', 'lastName', 'email', 'start_date', 'position', 'status', 'is_admin'
         );
         $empty_check = array(
-            'id', 'firstName', 'lastName', 'email', 'start_date', 'position', 'status', 'is_admin'
+            'id', 'firstName', 'lastName', 'start_date', 'position', 'status', 'is_admin'
         );
 
         User::_validate($data, $exist_check, $empty_check);

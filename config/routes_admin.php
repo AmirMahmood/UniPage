@@ -198,7 +198,7 @@ function apiRoute(App $app)
                 $user->lastName = $params['lastName'];
                 $user->email = $params['email'];
                 $user->start_date = $params['start_date'];
-                $user->end_date = $params['end_date'];
+                $user->end_date = $params['end_date'] ?? $user->end_date;
                 $user->position = $params['position'];
                 $user->status = $params['status'];
                 $user->is_admin = (int)$params['is_admin'];
