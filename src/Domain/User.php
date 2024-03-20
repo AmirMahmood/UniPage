@@ -30,7 +30,7 @@ final class User
     #[Column(type: 'string', nullable: false, length: 32)]
     public string $lastName;
 
-    #[Column(type: 'string', nullable: false, unique: true, length: 64)]
+    #[Column(type: 'string', nullable: false, length: 64)]
     public string $email;
 
     #[Column(type: 'string', nullable: false, length: 10)]

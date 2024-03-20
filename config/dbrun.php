@@ -109,6 +109,14 @@ function v2($conn)
     $conn->executeQuery($q3);
 }
 
+function v3($conn){
+    $q1 = "
+    ALTER TABLE `user` DROP INDEX `email`;
+    ";
+
+    $conn->executeQuery($q1);
+}
+
 function update_db_version($conn, int $ver)
 {
     $q = "
@@ -162,6 +170,9 @@ return function (App $app) {
             case 1:
                 array_push($runs, "v2");
                 run($em, 'v2', 2);
+            case 2:
+                array_push($runs, "v3");
+                run($em, 'v3', 3);
         }
 
         $runs_str = join(" ", $runs);
