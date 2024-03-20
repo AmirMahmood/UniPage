@@ -81,6 +81,34 @@ function v1_2($conn)
     $conn->executeQuery($q4);
 };
 
+function v2($conn)
+{
+    $q1 = "
+    CREATE TABLE `link` (
+        `id` int NOT NULL,
+        `url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+        `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+        `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+        `type` varchar(16) COLLATE utf8mb4_general_ci NOT NULL,
+        `last_modification` datetime DEFAULT NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    ";
+
+    $q2 = "
+    ALTER TABLE `link`
+    ADD PRIMARY KEY (`id`);
+    ";
+
+    $q3 = "
+    ALTER TABLE `link`
+    MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+    ";
+
+    $conn->executeQuery($q1);
+    $conn->executeQuery($q2);
+    $conn->executeQuery($q3);
+}
+
 function update_db_version($conn, int $ver)
 {
     $q = "
@@ -95,8 +123,8 @@ function run($em, $func, int $ver)
     $conn = $em->getConnection();
     // $conn->beginTransaction();
     // try {
-        call_user_func($func, $conn);
-        update_db_version($conn, $ver);
+    call_user_func($func, $conn);
+    update_db_version($conn, $ver);
 
     //     $conn->commit();
     // } catch (Exception $e) {
@@ -130,14 +158,14 @@ return function (App $app) {
         $db_version = $em->getConnection()->query('select db_version from app_info where app_info.id = 1')
             ->fetchAll()[0]['db_version'];
 
-        // switch ($db_version) {
-        //     case 1:
-        //         array_push($runs, "v1");
-        //         run($em, 'v2', 2);
-        // }
+        switch ($db_version) {
+            case 1:
+                array_push($runs, "v2");
+                run($em, 'v2', 2);
+        }
 
         $runs_str = join(" ", $runs);
         $response->getBody()->write("Ok. we run: $runs_str");
         return $response;
-    })->add(new LoginMiddleware($this));
+    })->add(new LoginMiddleware($app->getContainer()));
 };
