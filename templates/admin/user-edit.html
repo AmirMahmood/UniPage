@@ -119,7 +119,11 @@
                     if (key === 'username') {
                         continue;
                     }
-                    mpFormData.append(key, this.formData[key]);
+                    if (typeof this.formData[key] === 'boolean'){
+                        mpFormData.append(key, +this.formData[key]);
+                    } else {
+                        mpFormData.append(key, this.formData[key]);
+                    }
                 }
                 if (fileInput.value.trim().length) {
                     f = fileInput.files[0];

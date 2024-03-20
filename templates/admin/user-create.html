@@ -81,7 +81,11 @@
                 const fileInput = document.querySelector('#avatar');
                 const mpFormData = new FormData();
                 for (var key in this.formData) {
-                    mpFormData.append(key, this.formData[key]);
+                    if (typeof this.formData[key] === 'boolean'){
+                        mpFormData.append(key, +this.formData[key]);
+                    } else {
+                        mpFormData.append(key, this.formData[key]);
+                    }
                 }
                 if (fileInput.value.trim().length) {
                     mpFormData.append('avatar', fileInput.files[0]);
