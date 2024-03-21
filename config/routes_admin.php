@@ -198,8 +198,8 @@ function apiRoute(App $app)
                 if ($user === null) {
                     throw new ValidationException("user doesn't exist");
                 }
-                $user->firstName = $params['firstName'];
-                $user->lastName = $params['lastName'];
+                $user->firstname = $params['firstname'];
+                $user->lastname = $params['lastname'];
                 $user->email = $params['email'];
                 $user->start_date = $params['start_date'];
                 $user->end_date = $params['end_date'] ?? $user->end_date;

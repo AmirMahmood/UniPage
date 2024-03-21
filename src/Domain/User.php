@@ -25,10 +25,10 @@ final class User
     public string $password;
 
     #[Column(type: 'string', nullable: false, length: 32)]
-    public string $firstName;
+    public string $firstname;
 
     #[Column(type: 'string', nullable: false, length: 32)]
-    public string $lastName;
+    public string $lastname;
 
     #[Column(type: 'string', nullable: false, length: 64)]
     public string $email;
@@ -60,8 +60,8 @@ final class User
     public function __construct(
         string $username,
         string $password,
-        string $firstName,
-        string $lastName,
+        string $firstname,
+        string $lastname,
         string $start_date,
         string $position,
         string $status,
@@ -71,8 +71,8 @@ final class User
     ) {
         $this->username = strtolower($username);
         $this->password = hash('sha256', $password);
-        $this->firstName = $firstName;
-        $this->lastName = $lastName;
+        $this->firstname = $firstname;
+        $this->lastname = $lastname;
         $this->email = strtolower($email);
         $this->start_date = $start_date;
         $this->end_date = '';
@@ -91,10 +91,10 @@ final class User
     public static function validate_new(array $data)
     {
         $exist_check = array(
-            'username', 'password', 'firstName', 'lastName', 'email', 'start_date', 'position', 'status', 'is_admin'
+            'username', 'password', 'firstname', 'lastname', 'email', 'start_date', 'position', 'status', 'is_admin'
         );
         $empty_check = array(
-            'username', 'password', 'firstName', 'lastName', 'start_date', 'position', 'status', 'is_admin'
+            'username', 'password', 'firstname', 'lastname', 'start_date', 'position', 'status', 'is_admin'
         );
 
         User::_validate($data, $exist_check, $empty_check);
@@ -103,10 +103,10 @@ final class User
     public static function validate_update(array $data)
     {
         $exist_check = array(
-            'id', 'firstName', 'lastName', 'email', 'start_date', 'position', 'status', 'is_admin'
+            'id', 'firstname', 'lastname', 'email', 'start_date', 'position', 'status', 'is_admin'
         );
         $empty_check = array(
-            'id', 'firstName', 'lastName', 'start_date', 'position', 'status', 'is_admin'
+            'id', 'firstname', 'lastname', 'start_date', 'position', 'status', 'is_admin'
         );
 
         User::_validate($data, $exist_check, $empty_check);
