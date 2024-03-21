@@ -135,8 +135,8 @@ final class User
             }
         }
 
-        if (array_key_exists('username', $data) && $data['username'] !== '' && !preg_match("/^[0-9a-zA-Z]+$/", $data['username'])) {
-            throw new ValidationException("'username' can only contain numbers and english letters");
+        if (array_key_exists('username', $data) && $data['username'] !== '' && !preg_match("/^[^_.][0-9a-zA-Z_.]+[^_.]$/", $data['username'])) {
+            throw new ValidationException("'username' can only contain numbers, english letters, underline and dot");
         }
         if (array_key_exists('start_date', $data) && $data['start_date'] !== '' && !preg_match("/^\d{4}-\d{2}-\d{2}$/", $data['start_date'])) {
             throw new ValidationException("'start_date' must be in 'yyyy-mm-dd' format");
