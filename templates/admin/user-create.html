@@ -67,6 +67,14 @@
                 if (event.target.files[0] === undefined) {
                     output.src = "";
                 } else {
+                    var image = new Image();
+                    image.src = URL.createObjectURL(event.target.files[0]);
+                    image.onload = function () {
+                        if (image.width !== image.height) {
+                            alert('Avatar image Height & Width must be equal');
+                        }
+                    }
+
                     output.src = URL.createObjectURL(event.target.files[0]);
                     output.onload = function () {
                         URL.revokeObjectURL(output.src);

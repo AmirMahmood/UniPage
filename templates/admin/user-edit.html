@@ -84,13 +84,14 @@
                 var output = document.getElementById('avatar-preview');
                 if (event.target.files[0] === undefined) {
                     this.avatarUrl = this.getAvatarUrl();
-                    this.avatarWidth = 0;
-                    this.avatarHeight = 0;
                 } else {
                     var image = new Image();
                     image.src = URL.createObjectURL(event.target.files[0]);
-                    image.decode().resolve();
-                    alert(image.width);
+                    image.onload = function () {
+                        if (image.width !== image.height) {
+                            alert('Avatar image Height & Width must be equal');
+                        }
+                    }
 
                     output.src = URL.createObjectURL(event.target.files[0]);
                     output.onload = function () {
@@ -101,12 +102,6 @@
 
             submitForm() {
                 console.log(this.formData);
-
-                alert(this.avatarHeight);
-                if (this.ah != this.aw) {
-                    alert('Avatar image Height & Width must be equal')
-                    return;
-                }
 
                 this.formMessage = "";
                 this.formMessageSuccess = "";
@@ -119,7 +114,7 @@
                     if (key === 'username') {
                         continue;
                     }
-                    if (typeof this.formData[key] === 'boolean'){
+                    if (typeof this.formData[key] === 'boolean') {
                         mpFormData.append(key, +this.formData[key]);
                     } else {
                         mpFormData.append(key, this.formData[key]);
