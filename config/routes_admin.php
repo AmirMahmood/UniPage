@@ -56,6 +56,10 @@ function pagesRoute(App $app)
             );
         });
 
+        $group->get('', function (Request $request, Response $response, $args) {
+            return $response->withHeader('Location', '/admin/users')->withStatus(302);
+        });
+
         $group->get('/users', function (Request $request, Response $response, $args) {
             $view = $this->get(Twig::class);
             return $view->render(
