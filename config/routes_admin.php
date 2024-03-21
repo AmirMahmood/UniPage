@@ -140,7 +140,7 @@ function apiRoute(App $app)
                         if (!file_exists($dir_path)) {
                             mkdir($dir_path, 0777, true);
                         }
-                        $file_path = $dir_path . sprintf('%s.%s', $params['username'], 'jpeg');
+                        $file_path = $dir_path . sprintf('%s.%s', $params['username'], 'jpg');
                         $uploadedFile->moveTo($file_path);
                     }
                 }
@@ -217,7 +217,7 @@ function apiRoute(App $app)
                         if (!file_exists($dir_path)) {
                             mkdir($dir_path, 0777, true);
                         }
-                        $file_path = $dir_path . sprintf('%s.%s', $user->username, 'jpeg');
+                        $file_path = $dir_path . sprintf('%s.%s', $user->username, 'jpg');
                         $uploadedFile->moveTo($file_path);
                     }
                 }
@@ -236,7 +236,7 @@ function apiRoute(App $app)
                     throw new ValidationException("user doesn't exist");
                 }
                 $dir_path = $this->get('settings')['media_dir'] . DIRECTORY_SEPARATOR . 'avatar' . DIRECTORY_SEPARATOR;
-                $file_path = $dir_path . sprintf('%s.%s', $user->username, 'jpeg');
+                $file_path = $dir_path . sprintf('%s.%s', $user->username, 'jpg');
                 if (file_exists($file_path)) {
                     unlink($file_path);
                     $user->last_modification = new DateTimeImmutable('now');
