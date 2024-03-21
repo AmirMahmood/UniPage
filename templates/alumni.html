@@ -3,7 +3,7 @@
 {% block content %}
 <div class="w3-row-padding w3-padding-32 w3-container w3-justify w3-white">
 	<div class="w3-content">
-		<h2 class="w3-container h2_style_2"><span>PhD Students</span></h2>
+		<h2 class="w3-container h2_style_2"><span>Former PhD Students</span></h2>
 		{% for p in users|filter(p => p.position == 'phd' and p.status == 'alumni') -%}
 			{% if loop.index0 % 2 == 0 or loop.first %}
 				<div class="w3-row-padding">
@@ -25,7 +25,7 @@
 
 <div class="w3-row-padding w3-padding-32 w3-container w3-justify w3-light-grey">
 	<div class="w3-content">
-		<h2 class="w3-container h2_style_2"><span>MSc Students</span></h2>
+		<h2 class="w3-container h2_style_2"><span>Former MSc Students</span></h2>
 		{% for p in users|filter(p => p.position == 'msc' and p.status == 'alumni') -%}
 			{% if loop.index0 % 2 == 0 or loop.first %}
 				<div class="w3-row-padding">
