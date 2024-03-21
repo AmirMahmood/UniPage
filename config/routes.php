@@ -37,7 +37,15 @@ return function (App $app) {
         $view = $this->get(Twig::class);
         $em = $this->get(EntityManager::class);
 
-        return $view->render($response, 'alumni.html', ['page_id' => "alumni"]);
+        $query = $em->createQuery(
+            'SELECT p
+            FROM UniPage\Domain\User p
+            WHERE p.status <> :status
+            ORDER BY p.start_date ASC'
+        )->setParameter('status', UserStatusEnum::BLOCKED->value);
+        $res = $query->getResult();
+
+        return $view->render($response, 'alumni.html', ['page_id' => "alumni", 'users' => $res]);
     });
 
     $app->get('/publications', function (Request $request, Response $response, $args) {

@@ -6,8 +6,9 @@
 	<div class="w3-content">
 		<h1 class=" h2_style_2 w3-container">Lab Director</h1>
 		<div class="w3-half w3-container">
-			<img class="profile" src="/media/avatar/{{p.username}}.jpg?{{ random() }}" onerror="this.src='/static/img/default.png'">
-			<h5>Dr. Siamak Mohammadi</h5>
+			<img class="profile" src="/media/avatar/{{p.username}}.jpg?{{ random() }}"
+				onerror="this.src='/static/img/default.png'">
+			<h5>Dr. {{p.firstname}} {{p.lastname}}</h5>
 			<p class="w3-small" style="margin-bottom: 0">PhD (1999)</p>
 			<p class="w3-small">Assosiate Professor</p>
 			<p class="w3-small">Siamak Mohammadi received his BSc, MSc and PhD degrees from the University of Paris Sud
@@ -35,5 +36,49 @@
 		</div>
 	</div>
 	{% endfor %}
+</div>
+
+<div class="w3-row-padding w3-padding-32 w3-container w3-justify w3-white">
+	<div class="w3-content">
+		<h2 class="w3-container h2_style_2"><span>PhD Students</span></h2>
+		{% for p in users|filter(p => p.position == 'phd' and p.status == 'active') -%}
+			{% if loop.index0 % 2 == 0 or loop.first %}
+				<div class="w3-row-padding">
+			{% endif %}
+			<div class="member w3-half">
+				<div class="profile w3-container"><img src="/media/avatar/{{p.username}}.jpg?{{ random() }}"
+					onerror="this.src='/static/img/default.png'">
+					<h5>{{p.firstname}} {{p.lastname}}</h5>
+					<p class="w3-small"><a href="mailto:{{ p.email }}"> {{ p.email }} </a></p>
+					<p class="w3-small"> </p>
+				</div>
+			</div>
+			{% if loop.index0 % 2 == 1 or loop.last %}
+				</div>
+			{% endif %}
+		{% endfor %}
+	</div>
+</div>
+
+<div class="w3-row-padding w3-padding-32 w3-container w3-justify w3-light-grey">
+	<div class="w3-content">
+		<h2 class="w3-container h2_style_2"><span>MSc Students</span></h2>
+		{% for p in users|filter(p => p.position == 'msc' and p.status == 'active') -%}
+			{% if loop.index0 % 2 == 0 or loop.first %}
+				<div class="w3-row-padding">
+			{% endif %}
+			<div class="member w3-half">
+				<div class="profile w3-container"><img src="/media/avatar/{{p.username}}.jpg?{{ random() }}"
+					onerror="this.src='/static/img/default.png'">
+					<h5>{{p.firstname}} {{p.lastname}}</h5>
+					<p class="w3-small"><a href="mailto:{{ p.email }}"> {{ p.email }} </a></p>
+					<p class="w3-small"> </p>
+				</div>
+			</div>
+			{% if loop.index0 % 2 == 1 or loop.last %}
+				</div>
+			{% endif %}
+		{% endfor %}
+	</div>
 </div>
 {% endblock %}
