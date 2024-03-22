@@ -117,6 +117,20 @@ function v3($conn){
     $conn->executeQuery($q1);
 }
 
+function v4($conn){
+    $q1 = "
+    ALTER TABLE `user`
+    ADD `linkedin` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    ADD `google_scholar` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    ADD `researchgate` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    ADD `orcid` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    ADD `dblp` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    ADD `website` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+    ";
+
+    $conn->executeQuery($q1);
+}
+
 function update_db_version($conn, int $ver)
 {
     $q = "
@@ -173,6 +187,9 @@ return function (App $app) {
             case 2:
                 array_push($runs, "v3");
                 run($em, 'v3', 3);
+            case 3:
+                array_push($runs, "v4");
+                run($em, 'v4', 4);
         }
 
         $runs_str = join(" ", $runs);

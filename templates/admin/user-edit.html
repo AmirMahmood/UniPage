@@ -45,7 +45,13 @@
                 end_date: "",
                 position: "",
                 status: "",
-                is_admin: false
+                is_admin: false,
+                linkedin: "",
+                google_scholar: "",
+                researchgate: "",
+                orcid: "",
+                dblp: "",
+                website: ""
             },
 
             init() {
@@ -74,6 +80,12 @@
                 this.formData.position = "phd";
                 this.formData.status = "active";
                 this.formData.is_admin = false;
+                this.formData.linkedin = "";
+                this.formData.google_scholar = "";
+                this.formData.researchgate = "";
+                this.formData.orcid = "";
+                this.formData.dblp = "";
+                this.formData.website = "";
             },
 
             getAvatarUrl() {
@@ -415,6 +427,42 @@
                     <option value="alumni">alumni</option>
                     <option value="blocked">blocked</option>
                 </select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="linkedin" class="col-sm-2 col-form-label">Linkedin</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="linkedin" name="linkedin" x-model="formData.linkedin">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="google_scholar" class="col-sm-2 col-form-label">Google Scholar</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="google_scholar" name="google_scholar" x-model="formData.google_scholar">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="researchgate" class="col-sm-2 col-form-label">ResearchGate</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="researchgate" name="researchgate" x-model="formData.researchgate">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="orcid" class="col-sm-2 col-form-label">ORCID</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="orcid" name="orcid" x-model="formData.orcid">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="dblp" class="col-sm-2 col-form-label">DBLP</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="dblp" name="dblp" x-model="formData.dblp">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="website" class="col-sm-2 col-form-label">Website</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="website" name="website" x-model="formData.website">
             </div>
         </div>
         <div class="row mb-3">

@@ -127,7 +127,7 @@ function apiRoute(App $app)
 
             $params = (array)$request->getParsedBody();
             try {
-                User::validate_new($params);
+                $params = User::validate_new($params);
                 $newUser = new User(...$params);
                 $em->persist($newUser);
                 $em->flush();
@@ -173,12 +173,12 @@ function apiRoute(App $app)
 
             $params = (array)$request->getParsedBody();
             try {
-                User::validate_password($params);
+                $params = User::validate_password($params);
                 $query = $em->createQuery(
                     'UPDATE UniPage\Domain\User p
                 SET p.password= :password, p.last_modification= :last_modification
                 WHERE p.id = :id'
-                )->setParameter('id', $params['id'])->setParameter('password', hash('sha256', $params['password']))
+                )->setParameter('id', $params['id'])->setParameter('password', $params['password'])
                     ->setParameter('last_modification', new DateTimeImmutable('now'));
                 $query->getResult();
             } catch (ValidationException $ex) {
@@ -193,20 +193,12 @@ function apiRoute(App $app)
 
             $params = (array)$request->getParsedBody();
             try {
-                User::validate_update($params);
+                $params = User::validate_update($params);
                 $user = $em->find('UniPage\Domain\User', $params['id']);
                 if ($user === null) {
                     throw new ValidationException("user doesn't exist");
                 }
-                $user->firstname = $params['firstname'];
-                $user->lastname = $params['lastname'];
-                $user->email = $params['email'];
-                $user->start_date = $params['start_date'];
-                $user->end_date = $params['end_date'] ?? $user->end_date;
-                $user->position = $params['position'];
-                $user->status = $params['status'];
-                $user->is_admin = (int)$params['is_admin'];
-                $user->last_modification = new DateTimeImmutable('now');
+                $user->update(...$params);
                 $em->flush();
             } catch (ValidationException | UniqueConstraintViolationException $ex) {
                 return HF::UniJsonResponse($response, statusCode: 400, errorMessage: $ex->getMessage());
