@@ -109,7 +109,8 @@ function v2($conn)
     $conn->executeQuery($q3);
 }
 
-function v3($conn){
+function v3($conn)
+{
     $q1 = "
     ALTER TABLE `user` DROP INDEX `email`;
     ";
@@ -117,7 +118,8 @@ function v3($conn){
     $conn->executeQuery($q1);
 }
 
-function v4($conn){
+function v4($conn)
+{
     $q1 = "
     ALTER TABLE `user`
     ADD `linkedin` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -155,6 +157,25 @@ function run($em, $func, int $ver)
     // }
 }
 
+function run_upgrade($em, $db_version)
+{
+    $runs = [];
+
+    switch ($db_version) {
+        case 1:
+            array_push($runs, "v2");
+            run($em, 'v2', 2);
+        case 2:
+            array_push($runs, "v3");
+            run($em, 'v3', 3);
+        case 3:
+            array_push($runs, "v4");
+            run($em, 'v4', 4);
+    }
+
+    return join(" ", $runs);
+}
+
 return function (App $app) {
     $app->get('/admin/install', function (Request $request, Response $response, $args) {
         $em = $this->get(EntityManager::class);
@@ -162,6 +183,7 @@ return function (App $app) {
         $schemaManager = $em->getConnection()->getSchemaManager();
         if ($schemaManager->tablesExist(array('app_info')) != true) {
             run($em, 'v1', 1);
+            run_upgrade($em, 1);
         }
 
         $response->getBody()->write("Ok.");
@@ -170,7 +192,6 @@ return function (App $app) {
 
     $app->get('/admin/upgrade', function (Request $request, Response $response, $args) {
         $em = $this->get(EntityManager::class);
-        $runs = [];
 
         $schemaManager = $em->getConnection()->getSchemaManager();
         if ($schemaManager->tablesExist(array('user')) != true || $schemaManager->tablesExist(array('app_info')) != true) {
@@ -180,19 +201,8 @@ return function (App $app) {
         $db_version = $em->getConnection()->query('select db_version from app_info where app_info.id = 1')
             ->fetchAll()[0]['db_version'];
 
-        switch ($db_version) {
-            case 1:
-                array_push($runs, "v2");
-                run($em, 'v2', 2);
-            case 2:
-                array_push($runs, "v3");
-                run($em, 'v3', 3);
-            case 3:
-                array_push($runs, "v4");
-                run($em, 'v4', 4);
-        }
-
-        $runs_str = join(" ", $runs);
+        $runs_str = run_upgrade($em, $db_version);
+        
         $response->getBody()->write("Ok. we run: $runs_str");
         return $response;
     })->add(new LoginMiddleware($app->getContainer()));
