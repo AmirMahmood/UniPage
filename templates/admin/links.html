@@ -1,0 +1,47 @@
+{% extends "admin/dashboard-base.html" %}
+
+{% block head %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        var table = $('#table').DataTable({
+            ajax: {
+                url: '/api/get-links',
+                dataSrc: 'content'
+            },
+            columns: [
+                { data: 'id', 'visible': false },
+                { data: 'title' },
+                { data: 'type' },
+                {
+                    data: null,
+                    defaultContent: '<button class="btn btn-sm btn-info">edit</button>',
+                    targets: -1
+                }
+            ]
+        });
+
+        $('#table tbody').on('click', 'button', function () {
+            var data = table.row($(this).parents('tr')).data();
+            window.location.replace("/admin/link-edit/" + data['id']);
+        });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div>
+    <a class="btn btn-secondary" role="button" href="/admin/link-create">New link</a>
+
+    <hr />
+
+    <table id="table" class="table table-bordered table-striped" width="100%">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Title</th>
+                <th>type</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+{% endblock %}

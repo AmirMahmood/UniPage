@@ -1,4 +1,47 @@
 {% extends "base.html" %}
 
+{% block head %}
+<style>
+    .links-list {
+        list-style-type: none;
+    }
+
+    .links-list li {
+        background: transparent;
+        border-bottom: #999 1px dotted;
+        padding: .1em 0 .1em .5em;
+    }
+
+    .links-list a {
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="w3-row-padding w3-padding-32 w3-container w3-white w3-justify">
+    <div class="w3-content">
+        <h2 class="w3-container h2_style_2"><span>Useful Links</span></h2>
+        <ul class="links-list">
+            {% for l in links|filter(l => l.type == 'essential') -%}
+            <li>
+                <a href="{{ l.url }}" style="color: #0077CC" target="_blank">{{ l.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="w3-row-padding w3-padding-32 w3-container w3-white w3-justify">
+    <div class="w3-content">
+        <h2 class="w3-container h2_style_2"><span>Useful Reads</span></h2>
+        <ul class="links-list">
+            {% for l in links|filter(l => l.type == 'guide') -%}
+            <li>
+                <a href="{{ l.url }}" style="color: #0077CC" target="_blank">{{ l.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endblock %}

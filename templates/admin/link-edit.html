@@ -1,0 +1,228 @@
+{% extends "admin/dashboard-base.html" %}
+
+{% block head %}
+<script>
+    const csrf = {
+        '{{ csrf.keys.name }}': "{{ csrf.name }}",
+        '{{ csrf.keys.value }}': "{{ csrf.value }}"
+    };
+    const id = Number('{{ id }}');
+
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('editLinkForm', () => ({
+            linkid: id,
+            formMessage: "",
+            formLoading: false,
+            formData: {
+                title: "",
+                url: "",
+                description: "",
+                type: "essential"
+            },
+
+            init() {
+                this.resetFormData();
+                this.getLink();
+            },
+
+            resetFormData() {
+                this.formData.title = "";
+                this.formData.url = "";
+                this.formData.description = "";
+                this.formData.type = "essential";
+            },
+
+            getLink() {
+                this.formMessage = "";
+                this.formLoading = true;
+
+                fetch('/api/get-link/' + this.linkid, {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            return response.json();
+                        } else if (response.status < 500 && response.status >= 400) {
+                            return response.json();
+                        } else {
+                            throw new Error('Server response was not OK');
+                        }
+                    })
+                    .then((response) => {
+                        if (response !== undefined) {
+                            if (response.error_message !== "") {
+                                this.formMessage = response.error_message;
+                            } else {
+                                this.formData = response.content[0];
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        this.formMessage = "Something went wrong.";
+                    })
+                    .finally(() => {
+                        this.formLoading = false;
+                    });
+            },
+
+            deleteLink() {
+                this.formMessage = "";
+                this.formLoading = true;
+
+                const mpFormData = new FormData();
+                for (var key in csrf) {
+                    mpFormData.append(key, csrf[key]);
+                }
+
+                fetch('/api/delete-link/' + this.linkid, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                    body: mpFormData
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            //this.resetFormData();
+                            window.location.replace("/admin/links");
+                        } else if (response.status < 500 && response.status >= 400) {
+                            return response.json();
+                        } else {
+                            throw new Error('Server response was not OK');
+                        }
+                    })
+                    .then((response) => {
+                        if (response !== undefined) {
+                            if (response.error_message !== "") {
+                                this.formMessage = response.error_message;
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        this.formMessage = "Something went wrong.";
+                    })
+                    .finally(() => {
+                        this.formLoading = false;
+                    });
+            },
+
+            submitForm() {
+                this.formMessage = "";
+                this.formLoading = true;
+
+                const mpFormData = new FormData();
+                for (var key in this.formData) {
+                    if (typeof this.formData[key] === 'boolean') {
+                        mpFormData.append(key, +this.formData[key]);
+                    } else {
+                        mpFormData.append(key, this.formData[key]);
+                    }
+                }
+                for (var key in csrf) {
+                    mpFormData.append(key, csrf[key]);
+                }
+
+                fetch('/api/update-link', {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                    body: mpFormData,
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            this.resetFormData();
+                            window.location.replace("/admin/links");
+                        } else if (response.status < 500 && response.status >= 400) {
+                            return response.json();
+                        } else {
+                            throw new Error('Server response was not OK');
+                        }
+                    })
+                    .then((response) => {
+                        if (response !== undefined) {
+                            this.formMessage = response.error_message;
+                        }
+                    })
+                    .catch((error) => {
+                        this.formMessage = "Something went wrong.";
+                    })
+                    .finally(() => {
+                        this.formLoading = false;
+                    });
+            }
+        }))
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div x-data="editLinkForm" x-cloak>
+    <h2>Edit Link</h2>
+    <hr />
+
+    <form @submit.prevent="submitForm">
+        <div class="alert alert-danger" role="alert" x-show="formMessage" x-text="formMessage"></div>
+
+        <div class="row mb-3">
+            <label for="title" class="col-sm-2 col-form-label">Title</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="title" name="title" required x-model="formData.title">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="url" class="col-sm-2 col-form-label">URL</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="url" name="url" x-model="formData.url" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="description" class="col-sm-2 col-form-label">Description</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="description" name="description"
+                    x-model="formData.description">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="type" class="col-sm-2 col-form-label">Type</label>
+            <div class="col-sm-10">
+                <select class="form-select" id="type" name="type" x-model="formData.type">
+                    <option value="essential" selected>essential</option>
+                    <option value="guide">guide</option>
+                    <option value="form">form</option>
+                    <option value="other">other</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" :disabled="formLoading"
+            x-text="formLoading ? 'Loading...' : 'Submit'"></button>
+    </form>
+
+    <div class="pt-3">
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+            :disabled="formLoading" x-text="formLoading ? 'Loading...' : 'Delete'">
+        </button>
+    </div>
+
+    <!-- delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Are you sure to delete this link?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" @click="deleteLink()" :disabled="formLoading"
+                        x-text="formLoading ? 'Loading...' : 'Delete'"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

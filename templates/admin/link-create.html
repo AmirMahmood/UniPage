@@ -1,0 +1,124 @@
+{% extends "admin/dashboard-base.html" %}
+
+{% block head %}
+<script>
+    const csrf = {
+        '{{ csrf.keys.name }}': "{{ csrf.name }}",
+        '{{ csrf.keys.value }}': "{{ csrf.value }}"
+    };
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('createLinkForm', () => ({
+            formMessage: "",
+            formLoading: false,
+            formData: {
+                title: "",
+                url: "",
+                description: "",
+                type: "essential"
+            },
+
+            init() {
+                this.resetFormData();
+            },
+
+            resetFormData() {
+                this.formData.title = "";
+                this.formData.url = "";
+                this.formData.description = "";
+                this.formData.type = "essential";
+            },
+
+            submitForm() {
+                this.formMessage = "";
+                this.formLoading = true;
+
+                const mpFormData = new FormData();
+                for (var key in this.formData) {
+                    if (typeof this.formData[key] === 'boolean'){
+                        mpFormData.append(key, +this.formData[key]);
+                    } else {
+                        mpFormData.append(key, this.formData[key]);
+                    }
+                }
+                for (var key in csrf) {
+                    mpFormData.append(key, csrf[key]);
+                }
+
+                fetch('/api/create-link', {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                    body: mpFormData,
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            this.resetFormData();
+                            window.location.replace("/admin/links");
+                        } else if (response.status < 500 && response.status >= 400) {
+                            return response.json();
+                        } else {
+                            throw new Error('Server response was not OK');
+                        }
+                    })
+                    .then((response) => {
+                        if (response !== undefined) {
+                            this.formMessage = response.error_message;
+                        }
+                    })
+                    .catch((error) => {
+                        this.formMessage = "Something went wrong.";
+                    })
+                    .finally(() => {
+                        this.formLoading = false;
+                    });
+            }
+        }))
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div>
+    <h2>Create New Link</h2>
+    <hr />
+
+    <form x-data="createLinkForm" @submit.prevent="submitForm" x-cloak>
+        <div class="alert alert-danger" role="alert" x-show="formMessage" x-text="formMessage"></div>
+
+        <div class="row mb-3">
+            <label for="title" class="col-sm-2 col-form-label">Title</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="title" name="title" required
+                    x-model="formData.title">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="url" class="col-sm-2 col-form-label">URL</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="url" name="url" x-model="formData.url" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="description" class="col-sm-2 col-form-label">Description</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="description" name="description" x-model="formData.description">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="type" class="col-sm-2 col-form-label">Type</label>
+            <div class="col-sm-10">
+                <select class="form-select" id="type" name="type" x-model="formData.type">
+                    <option value="essential" selected>essential</option>
+                    <option value="guide">guide</option>
+                    <option value="form">form</option>
+                    <option value="other">other</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" :disabled="formLoading"
+            x-text="formLoading ? 'Loading...' : 'Submit'"></button>
+    </form>
+</div>
+{% endblock %}
