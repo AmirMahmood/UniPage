@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% set phd_former = users|filter(p => p.position == 'phd' and p.status == 'alumni') %}
+{% if phd_former is not empty %}
 <div class="w3-row-padding w3-padding-32 w3-container w3-justify w3-white">
 	<div class="w3-content">
 		<h2 class="w3-container h2_style_2"><span>Former PhD Students</span></h2>
-		{% for p in users|filter(p => p.position == 'phd' and p.status == 'alumni') -%}
+		{% for p in phd_former -%}
 			{% if loop.index0 % 2 == 0 or loop.first %}
 				<div class="w3-row-padding">
 			{% endif %}
@@ -22,11 +25,14 @@
 		{% endfor %}
 	</div>
 </div>
+{% endif %}
 
+{% set msc_former = users|filter(p => p.position == 'msc' and p.status == 'alumni') %}
+{% if msc_former is not empty %}
 <div class="w3-row-padding w3-padding-32 w3-container w3-justify w3-light-grey">
 	<div class="w3-content">
 		<h2 class="w3-container h2_style_2"><span>Former MSc Students</span></h2>
-		{% for p in users|filter(p => p.position == 'msc' and p.status == 'alumni') -%}
+		{% for p in msc_former -%}
 			{% if loop.index0 % 2 == 0 or loop.first %}
 				<div class="w3-row-padding">
 			{% endif %}
@@ -44,4 +50,6 @@
 		{% endfor %}
 	</div>
 </div>
+{% endif %}
+
 {% endblock %}

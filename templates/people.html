@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% set prof = users|filter(p => p.position == 'prof') %}
+{% if prof is not empty %}
 <div class="w3-row-padding w3-padding-32 w3-container w3-white w3-justify">
-	{% for p in users|filter(p => p.position == 'prof') -%}
+	{% for p in prof -%}
 	<div class="w3-content">
 		<h1 class=" h2_style_2 w3-container">Lab Director</h1>
 		<div class="w3-half w3-container">
@@ -37,11 +40,14 @@
 	</div>
 	{% endfor %}
 </div>
+{% endif %}
 
+{% set phd_student = users|filter(p => p.position == 'phd' and p.status == 'active') %}
+{% if phd_student is not empty %}
 <div class="w3-row-padding w3-padding-32 w3-container w3-justify w3-white">
 	<div class="w3-content">
 		<h2 class="w3-container h2_style_2"><span>PhD Students</span></h2>
-		{% for p in users|filter(p => p.position == 'phd' and p.status == 'active') -%}
+		{% for p in phd_student -%}
 			{% if loop.index0 % 2 == 0 or loop.first %}
 				<div class="w3-row-padding">
 			{% endif %}
@@ -59,11 +65,14 @@
 		{% endfor %}
 	</div>
 </div>
+{% endif %}
 
+{% set msc_student = users|filter(p => p.position == 'msc' and p.status == 'active') %}
+{% if msc_student is not empty %}
 <div class="w3-row-padding w3-padding-32 w3-container w3-justify w3-light-grey">
 	<div class="w3-content">
 		<h2 class="w3-container h2_style_2"><span>MSc Students</span></h2>
-		{% for p in users|filter(p => p.position == 'msc' and p.status == 'active') -%}
+		{% for p in msc_student -%}
 			{% if loop.index0 % 2 == 0 or loop.first %}
 				<div class="w3-row-padding">
 			{% endif %}
@@ -81,4 +90,6 @@
 		{% endfor %}
 	</div>
 </div>
+{% endif %}
+
 {% endblock %}
