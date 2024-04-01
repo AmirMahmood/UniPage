@@ -133,6 +133,37 @@ function v4($conn)
     $conn->executeQuery($q1);
 }
 
+function v5($conn)
+{
+    $q1 = "
+    CREATE TABLE `publication` (
+        `id` int NOT NULL,
+        `url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+        `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+        `published_in` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+        `authors` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+        `citation` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+        `year` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+        `type` varchar(16) COLLATE utf8mb4_general_ci NOT NULL,
+        `last_modification` datetime DEFAULT NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    ";
+
+    $q2 = "
+    ALTER TABLE `publication`
+    ADD PRIMARY KEY (`id`);
+    ";
+
+    $q3 = "
+    ALTER TABLE `publication`
+    MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+    ";
+
+    $conn->executeQuery($q1);
+    $conn->executeQuery($q2);
+    $conn->executeQuery($q3);
+}
+
 function update_db_version($conn, int $ver)
 {
     $q = "
@@ -171,6 +202,9 @@ function run_upgrade($em, $db_version)
         case 3:
             array_push($runs, "v4");
             run($em, 'v4', 4);
+        case 4:
+            array_push($runs, "v5");
+            run($em, 'v5', 5);
     }
 
     return join(" ", $runs);

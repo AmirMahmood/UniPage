@@ -15,12 +15,24 @@ return function (App $app) {
     (require __DIR__ . '/routes_admin.php')($app);
 
     $app->group('/admin', function (RouteCollectorProxy $group) {
+        # publications
+        $group->get('/publications', 'UniPage\Controller\PublicationController:admin_publications_list_page');
+        $group->get('/publication-create', 'UniPage\Controller\PublicationController:admin_publication_create_page');
+        $group->get('/publication-edit/{id:[0-9]+}', 'UniPage\Controller\PublicationController:admin_publication_edit_page');
+        # links
         $group->get('/links', 'UniPage\Controller\LinkController:admin_links_list_page');
         $group->get('/link-create', 'UniPage\Controller\LinkController:admin_link_create_page');
         $group->get('/link-edit/{id:[0-9]+}', 'UniPage\Controller\LinkController:admin_link_edit_page');
     })->add(Guard::class)->add(new LoginMiddleware($app->getContainer()));
 
     $app->group('/api', function (RouteCollectorProxy $group) {
+        # publications
+        $group->get('/get-publications', 'UniPage\Controller\PublicationController:get_publications_list');
+        $group->get('/get-publication/{id:[0-9]+}', 'UniPage\Controller\PublicationController:get_publication');
+        $group->post('/delete-publication/{id:[0-9]+}', 'UniPage\Controller\PublicationController:delete_publication');
+        $group->post('/create-publication', 'UniPage\Controller\PublicationController:create_publication');
+        $group->post('/update-publication', 'UniPage\Controller\PublicationController:update_publication');
+        # links
         $group->get('/get-links', 'UniPage\Controller\LinkController:get_links_list');
         $group->get('/get-link/{id:[0-9]+}', 'UniPage\Controller\LinkController:get_link');
         $group->post('/delete-link/{id:[0-9]+}', 'UniPage\Controller\LinkController:delete_link');
@@ -69,7 +81,14 @@ return function (App $app) {
         $view = $this->get(Twig::class);
         $em = $this->get(EntityManager::class);
 
-        return $view->render($response, 'publications.html', ['page_id' => "publications"]);
+        $query = $em->createQuery(
+            'SELECT p
+            FROM UniPage\Domain\Publication p
+            ORDER BY p.year ASC'
+        );
+        $res = $query->getResult();
+
+        return $view->render($response, 'publications.html', ['page_id' => "publications", 'publications' => $res]);
     });
 
     $app->get('/courses', function (Request $request, Response $response, $args) {

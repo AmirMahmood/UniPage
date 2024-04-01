@@ -9,6 +9,7 @@
     },
     "require": {
         "php-di/php-di": "7.*",
+        "renanbr/bibtex-parser": "2.*",
         "slim/slim": "4.*",
         "slim/psr7": "1.*",
         "slim/csrf": "1.*",
