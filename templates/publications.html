@@ -7,36 +7,36 @@
         <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>Conferences</span></h2>
         {% for p in publications|filter(p => p.type == 'conference') -%}
         <div class="w3-container">
-            <h6>{{ p.get_title() }}</h6>
-            <p class="w3-small" style="margin:0;">{{ p.get_authors() }}</p>
-            <p class="w3-small w3-text-gray">{{ p.get_published_in() }} | {{ p.get_year() }}</p>
+            <h6>{{ p.gen_title() }}</h6>
+            <p class="w3-small" style="margin:0;">{{ p.gen_authors() }}</p>
+            <p class="w3-small w3-text-gray">{{ p.gen_published_in() }} | {{ p.gen_year() }}</p>
         </div>
         {% endfor %}
 
         <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>Journals</span></h2>
         {% for p in publications|filter(p => p.type == 'journal') -%}
         <div class="w3-container">
-            <h6>{{ p.get_title() }}</h6>
-            <p class="w3-small" style="margin:0;">{{ p.get_authors() }}</p>
-            <p class="w3-small w3-text-gray">{{ p.get_published_in() }} | {{ p.get_year() }}</p>
+            <h6>{{ p.gen_title() }}</h6>
+            <p class="w3-small" style="margin:0;">{{ p.gen_authors() }}</p>
+            <p class="w3-small w3-text-gray">{{ p.gen_published_in() }} | {{ p.gen_year() }}</p>
         </div>
         {% endfor %}
 
         <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>PhD theses</span></h2>
         {% for p in publications|filter(p => p.type == 'phdthesis') -%}
         <div class="w3-container">
-            <h6>{{ p.get_title() }}</h6>
-            <p class="w3-small" style="margin:0;">{{ p.get_authors() }}</p>
-            <p class="w3-small w3-text-gray">{{ p.get_published_in() }} | {{ p.get_year() }}</p>
+            <h6>{{ p.gen_title() }}</h6>
+            <p class="w3-small" style="margin:0;">{{ p.gen_authors() }}</p>
+            <p class="w3-small w3-text-gray">{{ p.gen_published_in() }} | {{ p.gen_year() }}</p>
         </div>
         {% endfor %}
 
         <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>Master theses</span></h2>
         {% for p in publications|filter(p => p.type == 'masterthesis') -%}
         <div class="w3-container">
-            <h6>{{ p.get_title() }}</h6>
-            <p class="w3-small" style="margin:0;">{{ p.get_authors() }}</p>
-            <p class="w3-small w3-text-gray">{{ p.get_published_in() }} | {{ p.get_year() }}</p>
+            <h6>{{ p.gen_title() }}</h6>
+            <p class="w3-small" style="margin:0;">{{ p.gen_authors() }}</p>
+            <p class="w3-small w3-text-gray">{{ p.gen_published_in() }} | {{ p.gen_year() }}</p>
         </div>
         {% endfor %}
 

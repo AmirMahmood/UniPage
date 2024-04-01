@@ -66,7 +66,8 @@ final class Publication
         $this->last_modification = new DateTimeImmutable('now');
     }
 
-    public function get_title()
+    // don't use function name started with `get`. doctrine uses that function to access properties.
+    public function gen_title()
     {
         $bibtex = $this->_get_parsed_bibtex();
         if ($bibtex !== null && array_key_exists('title', $bibtex)) {
@@ -75,7 +76,8 @@ final class Publication
         return $this->title;
     }
 
-    public function get_authors()
+    // don't use function name started with `get`. doctrine uses that function to access properties.
+    public function gen_authors()
     {
         $bibtex = $this->_get_parsed_bibtex();
         if ($bibtex !== null && array_key_exists('author', $bibtex)) {
@@ -84,7 +86,8 @@ final class Publication
         return $this->authors;
     }
 
-    public function get_year()
+    // don't use function name started with `get`. doctrine uses that function to access properties.
+    public function gen_year()
     {
         $bibtex = $this->_get_parsed_bibtex();
         if ($bibtex !== null && array_key_exists('year', $bibtex)) {
@@ -93,7 +96,8 @@ final class Publication
         return $this->year;
     }
 
-    public function get_published_in()
+    // don't use function name started with `get`. doctrine uses that function to access properties.
+    public function gen_published_in()
     {
         $bibtex = $this->_get_parsed_bibtex();
         if ($bibtex !== null) {
