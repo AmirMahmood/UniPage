@@ -1,5 +1,9 @@
 <?php
 
+/*
+    simple db migration
+*/
+
 use Slim\App;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -236,7 +240,7 @@ return function (App $app) {
             ->fetchAll()[0]['db_version'];
 
         $runs_str = run_upgrade($em, $db_version);
-        
+
         $response->getBody()->write("Ok. we run: $runs_str");
         return $response;
     })->add(new LoginMiddleware($app->getContainer()));

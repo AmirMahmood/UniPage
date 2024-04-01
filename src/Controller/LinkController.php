@@ -27,6 +27,18 @@ class LinkController
         $this->settings = $container->get('settings');
     }
 
+    public function site_links_page(Request $request, Response $response)
+    {
+        $query = $this->em->createQuery(
+            'SELECT p
+            FROM UniPage\Domain\Link p
+            ORDER BY p.title ASC'
+        );
+        $res = $query->getResult();
+
+        return $this->view->render($response, 'links.html', ['page_id' => "links", 'links' => $res]);
+    }
+
     public function admin_links_list_page(Request $request, Response $response)
     {
         return $this->view->render(

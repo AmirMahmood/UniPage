@@ -9,10 +9,17 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Doctrine\ORM\EntityManager;
 use UniPage\utils\UserStatusEnum;
 use UniPage\Middleware\LoginMiddleware;
+use UniPage\utils\HelperFuncs as HF;
 
 return function (App $app) {
     (require __DIR__ . '/dbrun.php')($app);
-    (require __DIR__ . '/routes_admin.php')($app);
+
+    $app->group('', function (RouteCollectorProxy $group) {
+        $group->get('/publications', 'UniPage\Controller\PublicationController:site_publications_page');
+        $group->get('/links', 'UniPage\Controller\LinkController:site_links_page');
+        $group->get('/people', 'UniPage\Controller\LinkController:site_people_page');
+        $group->get('/alumni', 'UniPage\Controller\LinkController:site_alumni_page');
+    });
 
     $app->group('/admin', function (RouteCollectorProxy $group) {
         # publications
@@ -23,6 +30,10 @@ return function (App $app) {
         $group->get('/links', 'UniPage\Controller\LinkController:admin_links_list_page');
         $group->get('/link-create', 'UniPage\Controller\LinkController:admin_link_create_page');
         $group->get('/link-edit/{id:[0-9]+}', 'UniPage\Controller\LinkController:admin_link_edit_page');
+        # users
+        $group->get('/users', 'UniPage\Controller\UserController:admin_users_list_page');
+        $group->get('/user-create', 'UniPage\Controller\UserController:admin_user_create_page');
+        $group->get('/user-edit/{id:[0-9]+}', 'UniPage\Controller\UserController:admin_user_edit_page');
     })->add(Guard::class)->add(new LoginMiddleware($app->getContainer()));
 
     $app->group('/api', function (RouteCollectorProxy $group) {
@@ -38,6 +49,14 @@ return function (App $app) {
         $group->post('/delete-link/{id:[0-9]+}', 'UniPage\Controller\LinkController:delete_link');
         $group->post('/create-link', 'UniPage\Controller\LinkController:create_link');
         $group->post('/update-link', 'UniPage\Controller\LinkController:update_link');
+        # users
+        $group->get('/get-users', 'UniPage\Controller\UserController:get_users_list');
+        $group->get('/get-user/{id:[0-9]+}', 'UniPage\Controller\UserController:get_user');
+        $group->post('/delete-user/{id:[0-9]+}', 'UniPage\Controller\UserController:delete_user');
+        $group->post('/create-user', 'UniPage\Controller\UserController:create_user');
+        $group->post('/update-user', 'UniPage\Controller\UserController:update_user');
+        $group->post('/delete-avatar/{id:[0-9]+}', 'UniPage\Controller\UserController:delete_avatar');
+        $group->post('/change-password', 'UniPage\Controller\UserController:change_password');
     })->add(Guard::class)->add(new LoginMiddleware($app->getContainer()));
 
     $app->get('/', function (Request $request, Response $response, $args) {
@@ -47,50 +66,6 @@ return function (App $app) {
         return $view->render($response, 'landing.html', ['page_id' => ""]);
     });
 
-    $app->get('/people', function (Request $request, Response $response, $args) {
-        $view = $this->get(Twig::class);
-        $em = $this->get(EntityManager::class);
-
-        $query = $em->createQuery(
-            'SELECT p
-            FROM UniPage\Domain\User p
-            WHERE p.status <> :status
-            ORDER BY p.start_date ASC'
-        )->setParameter('status', UserStatusEnum::BLOCKED->value);
-        $res = $query->getResult();
-
-        return $view->render($response, 'people.html', ['page_id' => "people", 'users' => $res]);
-    });
-
-    $app->get('/alumni', function (Request $request, Response $response, $args) {
-        $view = $this->get(Twig::class);
-        $em = $this->get(EntityManager::class);
-
-        $query = $em->createQuery(
-            'SELECT p
-            FROM UniPage\Domain\User p
-            WHERE p.status <> :status
-            ORDER BY p.start_date ASC'
-        )->setParameter('status', UserStatusEnum::BLOCKED->value);
-        $res = $query->getResult();
-
-        return $view->render($response, 'alumni.html', ['page_id' => "alumni", 'users' => $res]);
-    });
-
-    $app->get('/publications', function (Request $request, Response $response, $args) {
-        $view = $this->get(Twig::class);
-        $em = $this->get(EntityManager::class);
-
-        $query = $em->createQuery(
-            'SELECT p
-            FROM UniPage\Domain\Publication p
-            ORDER BY p.year ASC'
-        );
-        $res = $query->getResult();
-
-        return $view->render($response, 'publications.html', ['page_id' => "publications", 'publications' => $res]);
-    });
-
     $app->get('/courses', function (Request $request, Response $response, $args) {
         $view = $this->get(Twig::class);
         $em = $this->get(EntityManager::class);
@@ -98,17 +73,46 @@ return function (App $app) {
         return $view->render($response, 'courses.html', ['page_id' => "courses"]);
     });
 
-    $app->get('/links', function (Request $request, Response $response, $args) {
+    $app->get('/admin/login', function (Request $request, Response $response, $args) {
         $view = $this->get(Twig::class);
-        $em = $this->get(EntityManager::class);
-
-        $query = $em->createQuery(
-            'SELECT p
-            FROM UniPage\Domain\Link p
-            ORDER BY p.title ASC'
+        return $view->render(
+            $response,
+            'admin/login.html',
+            ['csrf' => HF::getCSRF($this), 'site_info' => $this->get('settings')['site_info']]
         );
-        $res = $query->getResult();
+    })->add(Guard::class);
 
-        return $view->render($response, 'links.html', ['page_id' => "links", 'links' => $res]);
-    });
+    $app->post('/admin/login', function (Request $request, Response $response, $args) {
+        $body = $request->getParsedBody();
+        $user = $body['username'];
+        $pass = $body['password'];
+
+        $em = $this->get(EntityManager::class);
+        $user = $em->getRepository('UniPage\Domain\User')
+            ->findOneBy(array('username' => $user, 'is_admin' => true, 'deleted' => false));
+
+        if ($user != null && $user->status != UserStatusEnum::BLOCKED->value && $user->password == hash('sha256', $pass)) {
+            // Save session and continue process
+            $_SESSION['user'] = $user->id;
+
+            $user->update_login_time();
+            $em->flush();
+
+            return $response->withHeader('Location', '/admin/users')->withStatus(302);
+        }
+
+        // Any other case, no valid session, send error
+        unset($_SESSION["user"]);
+
+        $view = $this->get(Twig::class);
+        return $view->render(
+            $response,
+            'admin/login.html',
+            ['csrf' => HF::getCSRF($this), 'site_info' => $this->get('settings')['site_info'], 'error' => "Wrong username or password"]
+        );
+    })->add(Guard::class);
+
+    $app->get('/admin', function (Request $request, Response $response, $args) {
+        return $response->withHeader('Location', '/admin/users')->withStatus(302);
+    })->add(Guard::class);
 };

@@ -27,6 +27,18 @@ class PublicationController
         $this->settings = $container->get('settings');
     }
 
+    public function site_publications_page(Request $request, Response $response)
+    {
+        $query = $this->em->createQuery(
+            'SELECT p
+            FROM UniPage\Domain\Publication p
+            ORDER BY p.year ASC'
+        );
+        $res = $query->getResult();
+
+        return $this->view->render($response, 'publications.html', ['page_id' => "publications", 'publications' => $res]);
+    }
+
     public function admin_publications_list_page(Request $request, Response $response)
     {
         return $this->view->render(
