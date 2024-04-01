@@ -92,7 +92,7 @@ final class Link
         }
 
         if (array_key_exists('type', $data) && $data['type'] !== '' && !in_array($data['type'], array_column(LinkTypeEnum::cases(), 'value'))) {
-            throw new ValidationException("there is no type '{$data['position']}'");
+            throw new ValidationException("there is no type '{$data['type']}'");
         }
 
         return $data;
