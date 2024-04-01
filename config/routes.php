@@ -17,8 +17,8 @@ return function (App $app) {
     $app->group('', function (RouteCollectorProxy $group) {
         $group->get('/publications', 'UniPage\Controller\PublicationController:site_publications_page');
         $group->get('/links', 'UniPage\Controller\LinkController:site_links_page');
-        $group->get('/people', 'UniPage\Controller\LinkController:site_people_page');
-        $group->get('/alumni', 'UniPage\Controller\LinkController:site_alumni_page');
+        $group->get('/people', 'UniPage\Controller\UserController:site_people_page');
+        $group->get('/alumni', 'UniPage\Controller\UserController:site_alumni_page');
     });
 
     $app->group('/admin', function (RouteCollectorProxy $group) {
