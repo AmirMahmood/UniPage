@@ -2,6 +2,7 @@
 
 namespace UniPage\Middleware;
 
+use Slim\App;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -24,14 +25,14 @@ class LoginMiddleware
 
             $user = $em->getRepository('UniPage\Domain\User')
                 ->findOneBy(array('id' => $_SESSION['user'], 'is_admin' => true, 'deleted' => false));
-                
+
             if ($user != null && $user->status != UserStatusEnum::BLOCKED->value) {
                 $response = $handler->handle($request);
                 return $response;
             }
         }
 
-        $response = new Response();
+        $response = $this->container->get(App::class)->getResponseFactory()->createResponse();
         return $response->withHeader('Location', '/admin/login')->withStatus(302);
     }
 }
