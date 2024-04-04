@@ -119,6 +119,9 @@ return function (App $app) {
     $app->get('/admin/delete-cache', function (Request $request, Response $response, $args) {
         function removeDir(string $dir): void
         {
+            if (!is_dir($dir)) {
+                return;
+            }
             $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
             $files = new RecursiveIteratorIterator(
                 $it,
