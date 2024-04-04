@@ -115,4 +115,28 @@ return function (App $app) {
     $app->get('/admin', function (Request $request, Response $response, $args) {
         return $response->withHeader('Location', '/admin/users')->withStatus(302);
     })->add(Guard::class);
+
+    $app->get('/admin/delete-cache', function (Request $request, Response $response, $args) {
+        function removeDir(string $dir): void
+        {
+            $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+            $files = new RecursiveIteratorIterator(
+                $it,
+                RecursiveIteratorIterator::CHILD_FIRST
+            );
+            foreach ($files as $file) {
+                if ($file->isDir()) {
+                    rmdir($file->getPathname());
+                } else {
+                    unlink($file->getPathname());
+                }
+            }
+        }
+
+        removeDir(__DIR__ . '/../var/twig');
+        removeDir(__DIR__ . '/../var/doctrine');
+
+        $response->getBody()->write("Cache clear complete");
+        return $response;
+    });
 };
