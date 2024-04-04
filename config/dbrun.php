@@ -241,7 +241,12 @@ return function (App $app) {
 
         $runs_str = run_upgrade($em, $db_version);
 
-        $response->getBody()->write("Ok. we run: $runs_str");
+        $res_txt = "There is no database upgrade";
+        if (!empty($runs_str)) {
+            $res_txt = "Database upgrading sone. upgrades: $runs_str";
+        }
+
+        $response->getBody()->write($res_txt);
         return $response;
     })->add(new LoginMiddleware($app->getContainer()));
 };
