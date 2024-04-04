@@ -1,55 +1,80 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+    .w3-content a {
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="w3-row-padding w3-padding-32 w3-container w3-white w3-justify">
     <div class="w3-content">
 
         {% set conference_pub = publications|filter(p => p.type == 'conference') %}
         {% if conference_pub is not empty %}
-            <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>Conferences</span></h2>
-            {% for p in conference_pub -%}
-                <div class="w3-container">
-                    <h6>{{ p.gen_title() }}</h6>
-                    <p class="w3-small" style="margin:0;">{{ p.gen_authors() }}</p>
-                    <p class="w3-small w3-text-gray">{{ p.gen_published_in() }} | {{ p.gen_year() }}</p>
-                </div>
-            {% endfor %}
+        <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>Conferences</span></h2>
+        {% for p in conference_pub -%}
+        <div class="w3-container">
+            {% if p.gen_url() is not empty %}
+            <h6><a href="{{ p.gen_url() }}" target="_blank">{{ p.gen_title() }} <i class="bi bi-link-45deg"></i></a></h6>
+            {% else %}
+            <h6>{{ p.gen_title() }}</h6>
+            {% endif %}
+            <p class="w3-small" style="margin:0;">{{ p.gen_authors() }}</p>
+            <p class="w3-small w3-text-gray">{{ p.gen_published_in() }} | {{ p.gen_year() }}</p>
+        </div>
+        {% endfor %}
         {% endif %}
 
         {% set journal_pub = publications|filter(p => p.type == 'journal') %}
         {% if journal_pub is not empty %}
-            <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>Journals</span></h2>
-            {% for p in journal_pub -%}
-                <div class="w3-container">
-                    <h6>{{ p.gen_title() }}</h6>
-                    <p class="w3-small" style="margin:0;">{{ p.gen_authors() }}</p>
-                    <p class="w3-small w3-text-gray">{{ p.gen_published_in() }} | {{ p.gen_year() }}</p>
-                </div>
-            {% endfor %}
+        <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>Journals</span></h2>
+        {% for p in journal_pub -%}
+        <div class="w3-container">
+            {% if p.gen_url() is not empty %}
+            <h6><a href="{{ p.gen_url() }}" target="_blank">{{ p.gen_title() }} <i class="bi bi-link-45deg"></i></a></h6>
+            {% else %}
+            <h6>{{ p.gen_title() }}</h6>
+            {% endif %}
+            <p class="w3-small" style="margin:0;">{{ p.gen_authors() }}</p>
+            <p class="w3-small w3-text-gray">{{ p.gen_published_in() }} | {{ p.gen_year() }}</p>
+        </div>
+        {% endfor %}
         {% endif %}
 
         {% set phdthesis_pub = publications|filter(p => p.type == 'phdthesis') %}
         {% if phdthesis_pub is not empty %}
-            <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>PhD theses</span></h2>
-            {% for p in phdthesis_pub -%}
-                <div class="w3-container">
-                    <h6>{{ p.gen_title() }}</h6>
-                    <p class="w3-small" style="margin:0;">{{ p.gen_authors() }}</p>
-                    <p class="w3-small w3-text-gray">{{ p.gen_published_in() }} | {{ p.gen_year() }}</p>
-                </div>
-            {% endfor %}
+        <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>PhD theses</span></h2>
+        {% for p in phdthesis_pub -%}
+        <div class="w3-container">
+            {% if p.gen_url() is not empty %}
+            <h6><a href="{{ p.gen_url() }}" target="_blank">{{ p.gen_title() }} <i class="bi bi-link-45deg"></i></a></h6>
+            {% else %}
+            <h6>{{ p.gen_title() }}</h6>
+            {% endif %}
+            <p class="w3-small" style="margin:0;">{{ p.gen_authors() }}</p>
+            <p class="w3-small w3-text-gray">{{ p.gen_published_in() }} | {{ p.gen_year() }}</p>
+        </div>
+        {% endfor %}
         {% endif %}
 
         {% set masterthesis_pub = publications|filter(p => p.type == 'masterthesis') %}
         {% if masterthesis_pub is not empty %}
-            <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>Master theses</span></h2>
-            {% for p in masterthesis_pub -%}
-                <div class="w3-container">
-                    <h6>{{ p.gen_title() }}</h6>
-                    <p class="w3-small" style="margin:0;">{{ p.gen_authors() }}</p>
-                    <p class="w3-small w3-text-gray">{{ p.gen_published_in() }} | {{ p.gen_year() }}</p>
-                </div>
-            {% endfor %}
+        <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>Master theses</span></h2>
+        {% for p in masterthesis_pub -%}
+        <div class="w3-container">
+            {% if p.gen_url() is not empty %}
+            <h6><a href="{{ p.gen_url() }}" target="_blank">{{ p.gen_title() }} <i class="bi bi-link-45deg"></i></a></h6>
+            {% else %}
+            <h6>{{ p.gen_title() }}</h6>
+            {% endif %}
+            <p class="w3-small" style="margin:0;">{{ p.gen_authors() }}</p>
+            <p class="w3-small w3-text-gray">{{ p.gen_published_in() }} | {{ p.gen_year() }}</p>
+        </div>
+        {% endfor %}
         {% endif %}
 
     </div>

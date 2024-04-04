@@ -67,6 +67,20 @@ final class Publication
     }
 
     // don't use function name started with `get`. doctrine uses that function to access properties.
+    public function gen_url()
+    {
+        $bibtex = $this->_get_parsed_bibtex();
+        if ($bibtex !== null && array_key_exists('doi', $bibtex)) {
+            $doi = $bibtex['doi'];
+            if (!str_contains($doi, 'doi.org/')) {
+                return 'https://doi.org/' . $doi;
+            }
+            return $doi;
+        }
+        return $this->url;
+    }
+
+    // don't use function name started with `get`. doctrine uses that function to access properties.
     public function gen_title()
     {
         $bibtex = $this->_get_parsed_bibtex();
