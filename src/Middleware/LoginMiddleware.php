@@ -31,7 +31,7 @@ class LoginMiddleware
             }
         }
 
-        $response = new \Slim\Psr7\Response();
+        $response = new Response();
         return $response->withHeader('Location', '/admin/login')->withStatus(302);
     }
 }
