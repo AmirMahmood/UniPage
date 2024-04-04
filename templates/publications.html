@@ -3,7 +3,11 @@
 {% block head %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
-    .w3-content a {
+    .publications h6 {
+        font-weight: bold !important;
+    }
+
+    .publications a {
         text-decoration: none;
     }
 </style>
@@ -17,7 +21,7 @@
         {% if conference_pub is not empty %}
         <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>Conferences</span></h2>
         {% for p in conference_pub -%}
-        <div class="w3-container">
+        <div class="w3-container publications">
             {% if p.gen_url() is not empty %}
             <h6><a href="{{ p.gen_url() }}" target="_blank">{{ p.gen_title() }} <i class="bi bi-link-45deg"></i></a></h6>
             {% else %}
@@ -33,7 +37,7 @@
         {% if journal_pub is not empty %}
         <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>Journals</span></h2>
         {% for p in journal_pub -%}
-        <div class="w3-container">
+        <div class="w3-container publications">
             {% if p.gen_url() is not empty %}
             <h6><a href="{{ p.gen_url() }}" target="_blank">{{ p.gen_title() }} <i class="bi bi-link-45deg"></i></a></h6>
             {% else %}
@@ -49,7 +53,7 @@
         {% if phdthesis_pub is not empty %}
         <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>PhD theses</span></h2>
         {% for p in phdthesis_pub -%}
-        <div class="w3-container">
+        <div class="w3-container publications">
             {% if p.gen_url() is not empty %}
             <h6><a href="{{ p.gen_url() }}" target="_blank">{{ p.gen_title() }} <i class="bi bi-link-45deg"></i></a></h6>
             {% else %}
@@ -65,7 +69,7 @@
         {% if masterthesis_pub is not empty %}
         <h2 class="h2_style_2 w3-margin w3-border-bottom"><span>Master theses</span></h2>
         {% for p in masterthesis_pub -%}
-        <div class="w3-container">
+        <div class="w3-container publications">
             {% if p.gen_url() is not empty %}
             <h6><a href="{{ p.gen_url() }}" target="_blank">{{ p.gen_title() }} <i class="bi bi-link-45deg"></i></a></h6>
             {% else %}
