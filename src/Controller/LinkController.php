@@ -72,7 +72,7 @@ class LinkController
         $query = $this->em->createQuery(
             'SELECT p
         FROM UniPage\Domain\Link p
-        ORDER BY p.id ASC'
+        ORDER BY p.id DESC'
         );
         $content = $query->getResult();
 
@@ -102,7 +102,7 @@ class LinkController
             'SELECT p
         FROM UniPage\Domain\Link p
         WHERE p.id = :id
-        ORDER BY p.id ASC'
+        ORDER BY p.id DESC'
         )->setParameter('id', $id);
 
         // return empty content on not fount

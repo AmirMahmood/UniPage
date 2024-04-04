@@ -36,7 +36,7 @@ class UserController
             'SELECT p
             FROM UniPage\Domain\User p
             WHERE p.status <> :status
-            ORDER BY p.start_date ASC'
+            ORDER BY p.start_date DESC'
         )->setParameter('status', UserStatusEnum::BLOCKED->value);
         $res = $query->getResult();
 
@@ -49,7 +49,7 @@ class UserController
             'SELECT p
             FROM UniPage\Domain\User p
             WHERE p.status <> :status
-            ORDER BY p.start_date ASC'
+            ORDER BY p.start_date DESC'
         )->setParameter('status', UserStatusEnum::BLOCKED->value);
         $res = $query->getResult();
 
@@ -90,7 +90,7 @@ class UserController
             'SELECT p
         FROM UniPage\Domain\User p
         WHERE p.deleted <> 1
-        ORDER BY p.id ASC'
+        ORDER BY p.id DESC'
         );
         $content = $query->getResult();
 
@@ -136,7 +136,7 @@ class UserController
             'SELECT p
         FROM UniPage\Domain\User p
         WHERE p.id = :id AND p.deleted <> 1
-        ORDER BY p.id ASC'
+        ORDER BY p.id DESC'
         )->setParameter('id', $id);
 
         // return empty content on not fount

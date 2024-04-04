@@ -32,7 +32,7 @@ class PublicationController
         $query = $this->em->createQuery(
             'SELECT p
             FROM UniPage\Domain\Publication p
-            ORDER BY p.year ASC'
+            ORDER BY p.year DESC'
         );
         $res = $query->getResult();
 
@@ -72,7 +72,7 @@ class PublicationController
         $query = $this->em->createQuery(
             'SELECT p
         FROM UniPage\Domain\Publication p
-        ORDER BY p.id ASC'
+        ORDER BY p.year DESC'
         );
         $content = $query->getResult();
 
@@ -102,7 +102,7 @@ class PublicationController
             'SELECT p
         FROM UniPage\Domain\Publication p
         WHERE p.id = :id
-        ORDER BY p.id ASC'
+        ORDER BY p.id DESC'
         )->setParameter('id', $id);
 
         // return empty content on not fount
