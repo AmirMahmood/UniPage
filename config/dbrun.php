@@ -168,6 +168,13 @@ function v5($conn)
     $conn->executeQuery($q3);
 }
 
+function v6($conn)
+{
+    $q1 = "ALTER TABLE `user` ADD `bio` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;";
+    $conn->executeQuery($q1);
+}
+
+
 function update_db_version($conn, int $ver)
 {
     $q = "
@@ -209,6 +216,9 @@ function run_upgrade($em, $db_version)
         case 4:
             array_push($runs, "v5");
             run($em, 'v5', 5);
+        case 5:
+            array_push($runs, "v6");
+            run($em, 'v6', 6);
     }
 
     return join(" ", $runs);
@@ -243,7 +253,7 @@ return function (App $app) {
 
         $res_txt = "There is no database upgrade";
         if (!empty($runs_str)) {
-            $res_txt = "Database upgrading sone. upgrades: $runs_str";
+            $res_txt = "Database upgrading done. upgrades: $runs_str";
         }
 
         $response->getBody()->write($res_txt);

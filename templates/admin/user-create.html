@@ -43,7 +43,8 @@
                 researchgate: "",
                 orcid: "",
                 dblp: "",
-                website: ""
+                website: "",
+                bio: ""
             },
 
             init() {
@@ -72,6 +73,7 @@
                 this.formData.orcid = "";
                 this.formData.dblp = "";
                 this.formData.website = "";
+                this.formData.bio = "";
             },
 
             showImgPreview(event) {
@@ -166,28 +168,28 @@
             </div>
         </div>
         <div class="row mb-3">
-            <label for="username" class="col-sm-2 col-form-label">Username</label>
+            <label for="username" class="col-sm-2 col-form-label">Username *</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="username" name="username" required
                     x-model="formData.username">
             </div>
         </div>
         <div class="row mb-3">
-            <label for="password" class="col-sm-2 col-form-label">Password</label>
+            <label for="password" class="col-sm-2 col-form-label">Password *</label>
             <div class="col-sm-10">
                 <input type="password" class="form-control" id="password" name="password" x-model="formData.password"
                     required>
             </div>
         </div>
         <div class="row mb-3">
-            <label for="firstname" class="col-sm-2 col-form-label">First Name</label>
+            <label for="firstname" class="col-sm-2 col-form-label">First Name *</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="firstname" name="firstname" required
                     x-model="formData.firstname">
             </div>
         </div>
         <div class="row mb-3">
-            <label for="lastname" class="col-sm-2 col-form-label">Last name</label>
+            <label for="lastname" class="col-sm-2 col-form-label">Last name *</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="lastname" name="lastname" required
                     x-model="formData.lastname">
@@ -200,13 +202,13 @@
             </div>
         </div>
         <div class="row mb-3">
-            <label for="start_date" class="col-sm-2 col-form-label">Start Date</label>
+            <label for="start_date" class="col-sm-2 col-form-label">Start Date *</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="start_date" name="start_date" required x-model="formData.start_date">
             </div>
         </div>
         <div class="row mb-3">
-            <label for="position" class="col-sm-2 col-form-label">Position</label>
+            <label for="position" class="col-sm-2 col-form-label">Position *</label>
             <div class="col-sm-10">
                 <select class="form-select" id="position" name="position" x-model="formData.position">
                     <option value="phd" selected>phd</option>
@@ -218,7 +220,7 @@
             </div>
         </div>
         <div class="row mb-3">
-            <label for="status" class="col-sm-2 col-form-label">Status</label>
+            <label for="status" class="col-sm-2 col-form-label">Status *</label>
             <div class="col-sm-10">
                 <select class="form-select" id="status" name="status" x-model="formData.status">
                     <option value="active">active</option>
@@ -261,6 +263,12 @@
             <label for="website" class="col-sm-2 col-form-label">Website</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="website" name="website" x-model="formData.website">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="bio" class="col-sm-2 col-form-label">Bio</label>
+            <div class="col-sm-10">
+                <textarea type="text" class="form-control" id="bio" name="bio" x-model="formData.bio" rows="3"></textarea>
             </div>
         </div>
         <div class="row mb-3">

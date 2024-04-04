@@ -75,6 +75,9 @@ final class User
     #[Column(type: 'string', nullable: false)]
     public string $website;
 
+    #[Column(type: 'string', nullable: false)]
+    public string $bio;
+
     public function __construct(
         string $username,
         string $password,
@@ -92,6 +95,7 @@ final class User
         string $orcid = '',
         string $dblp = '',
         string $website = '',
+        string $bio = '',
         ...$args
     ) {
         $this->username = $username;
@@ -112,6 +116,7 @@ final class User
         $this->orcid = $orcid;
         $this->dblp = $dblp;
         $this->website = $website;
+        $this->bio = $bio;
     }
 
     static private function _get_empty_check_list()
@@ -124,7 +129,8 @@ final class User
         #TODO: check can_update with real columns
         $can_update = array(
             'firstname', 'lastname', 'email', 'end_date', 'start_date', 'position', 'status',
-            'is_admin', 'linkedin', 'google_scholar', 'researchgate', 'orcid', 'dblp', 'website'
+            'is_admin', 'linkedin', 'google_scholar', 'researchgate', 'orcid', 'dblp', 'website',
+            'bio'
         );
 
         foreach ($can_update as $key) {
