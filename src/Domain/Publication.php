@@ -140,6 +140,18 @@ final class Publication
 
         $listener = new Listener();
         $listener->addProcessor(new Processor\TagNameCaseProcessor(CASE_LOWER));
+        $listener->addProcessor(new Processor\NamesProcessor());
+        // format authors string base on NamesProcessor result
+        $listener->addProcessor(static function (array $entry) {
+            $authors = [];
+            foreach ($entry['author'] as $author) {
+                $author['von'] = (empty($author['von'])) ? $author['von'] : ' ' . $author['von'];
+                $author['jr'] = (empty($author['von'])) ? $author['von'] : ' ' . $author['von'];
+                array_push($authors, sprintf("%s%s %s%s", $author['first'], $author['von'], $author['last'], $author['jr']));
+            }
+            $entry['author'] = join(", ", $authors);
+            return $entry;
+        });
         $parser = new Parser();
         $parser->addListener($listener);
         $parser->parseString($this->citation);
