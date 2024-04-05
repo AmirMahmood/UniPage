@@ -1,5 +1,6 @@
 <?php
 
+use Doctrine\DBAL\Connection;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Views\Twig;
@@ -84,19 +85,25 @@ return function (App $app) {
 
     $app->post('/admin/login', function (Request $request, Response $response, $args) {
         $body = $request->getParsedBody();
-        $user = $body['username'];
+        $username = $body['username'];
         $pass = $body['password'];
 
-        $em = $this->get(EntityManager::class);
-        $user = $em->getRepository('UniPage\Domain\User')
-            ->findOneBy(array('username' => $user, 'is_admin' => true, 'deleted' => false));
+        $conn = $this->get(Connection::class);
 
-        if ($user != null && $user->status != UserStatusEnum::BLOCKED->value && $user->password == hash('sha256', $pass)) {
+        $user = $conn->executeQuery(
+            'SELECT id FROM user WHERE user.username = :username AND user.password = :password AND user.is_admin = 1 AND user.deleted = 0 AND user.status <> :status',
+            ['username' => $username, 'status' => UserStatusEnum::BLOCKED->value, 'password' => hash('sha256', $pass)]
+        )->fetchAll();
+
+        if (!empty($user)) {
             // Save session and continue process
-            $_SESSION['user'] = $user->id;
+            $_SESSION['user'] = $user[0]['id'];
 
-            $user->update_login_time();
-            $em->flush();
+            $q = "UPDATE `user` SET last_login = :last_login WHERE id = :id;";
+            $stmt = $conn->prepare($q);
+            $stmt->executeQuery(
+                array('last_login' => date_format(new DateTimeImmutable('now'), 'Y-m-d H:i:s'), 'id' => $user[0]['id'])
+            );
 
             return $response->withHeader('Location', '/admin/users')->withStatus(302);
         }

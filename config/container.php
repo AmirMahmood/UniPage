@@ -11,6 +11,8 @@ use Doctrine\ORM\Tools\Setup;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Doctrine\Common\Cache\Psr6\DoctrineProvider;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 
 return [
     'settings' => function () {
@@ -35,7 +37,7 @@ return [
         );
     },
 
-    EntityManager::class => function (ContainerInterface $container) {
+    Connection::class => function (ContainerInterface $container) {
         $settings = $container->get('settings');
 
         // Use the ArrayAdapter or the FilesystemAdapter depending on the value of the 'dev_mode' setting
@@ -50,7 +52,27 @@ return [
             null,
             $cache
         );
-        return EntityManager::create($settings['doctrine']['connection'], $config);
+
+        return DriverManager::getConnection($settings['doctrine']['connection'], $config);
+    },
+
+    EntityManager::class => function (ContainerInterface $container) {
+        $settings = $container->get('settings');
+        $connection = $container->get(Connection::class);
+
+        // Use the ArrayAdapter or the FilesystemAdapter depending on the value of the 'dev_mode' setting
+        // You can substitute the FilesystemAdapter for any other cache you prefer from the symfony/cache library
+        $cache = $settings['doctrine']['dev_mode'] ?
+            DoctrineProvider::wrap(new ArrayAdapter()) :
+            DoctrineProvider::wrap(new FilesystemAdapter(directory: $settings['doctrine']['cache_dir']));
+
+        $config = Setup::createAttributeMetadataConfiguration(
+            $settings['doctrine']['metadata_dirs'],
+            $settings['doctrine']['dev_mode'],
+            null,
+            $cache
+        );
+        return EntityManager::create($connection, $config);
     },
 
     Guard::class => function (ContainerInterface $container) {

@@ -2,11 +2,11 @@
 
 namespace UniPage\Middleware;
 
+use Doctrine\DBAL\Connection;
 use Slim\App;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Http\Message\ResponseInterface as Response;
-use Doctrine\ORM\EntityManager;
 use UniPage\utils\UserStatusEnum;
 
 class LoginMiddleware
@@ -21,12 +21,14 @@ class LoginMiddleware
     public function __invoke(Request $request, RequestHandler $handler): Response
     {
         if (!empty($_SESSION['user'])) {
-            $em = $this->container->get(EntityManager::class);
+            $conn = $this->container->get(Connection::class);
+            
+            $user = $conn->executeQuery(
+                'SELECT username FROM user WHERE user.id = :id AND user.is_admin = 1 AND user.deleted = 0 AND user.status <> :status',
+                ['id'=> $_SESSION['user'], 'status' => UserStatusEnum::BLOCKED->value]
+            )->fetchAll();
 
-            $user = $em->getRepository('UniPage\Domain\User')
-                ->findOneBy(array('id' => $_SESSION['user'], 'is_admin' => true, 'deleted' => false));
-
-            if ($user != null && $user->status != UserStatusEnum::BLOCKED->value) {
+            if (!empty($user)) {
                 $response = $handler->handle($request);
                 return $response;
             }
