@@ -202,22 +202,12 @@ function run_upgrade($conn, $db_version)
 {
     $runs = [];
 
-    switch ($db_version) {
-        case 1:
-            array_push($runs, "v2");
-            run($conn, 'v2', 2);
-        case 2:
-            array_push($runs, "v3");
-            run($conn, 'v3', 3);
-        case 3:
-            array_push($runs, "v4");
-            run($conn, 'v4', 4);
-        case 4:
-            array_push($runs, "v5");
-            run($conn, 'v5', 5);
-        case 5:
-            array_push($runs, "v6");
-            run($conn, 'v6', 6);
+    $last_version = 6;
+    if ($db_version >= 1  && $db_version < $last_version) {
+        foreach (range($db_version + 1, $last_version) as $ver) {
+            array_push($runs, "v{$ver}");
+            run($conn, "v{$ver}", $ver);
+        }
     }
 
     return join(" ", $runs);
