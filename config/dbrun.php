@@ -4,10 +4,10 @@
     simple db migration
 */
 
+use Doctrine\DBAL\Connection;
 use Slim\App;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Doctrine\ORM\EntityManager;
 use UniPage\Middleware\LoginMiddleware;
 
 function v1($conn)
@@ -184,9 +184,8 @@ function update_db_version($conn, int $ver)
     $stmt->executeQuery(array('db_version' => $ver));
 };
 
-function run($em, $func, int $ver)
+function run($conn, $func, int $ver)
 {
-    $conn = $em->getConnection();
     // $conn->beginTransaction();
     // try {
     call_user_func($func, $conn);
@@ -199,26 +198,26 @@ function run($em, $func, int $ver)
     // }
 }
 
-function run_upgrade($em, $db_version)
+function run_upgrade($conn, $db_version)
 {
     $runs = [];
 
     switch ($db_version) {
         case 1:
             array_push($runs, "v2");
-            run($em, 'v2', 2);
+            run($conn, 'v2', 2);
         case 2:
             array_push($runs, "v3");
-            run($em, 'v3', 3);
+            run($conn, 'v3', 3);
         case 3:
             array_push($runs, "v4");
-            run($em, 'v4', 4);
+            run($conn, 'v4', 4);
         case 4:
             array_push($runs, "v5");
-            run($em, 'v5', 5);
+            run($conn, 'v5', 5);
         case 5:
             array_push($runs, "v6");
-            run($em, 'v6', 6);
+            run($conn, 'v6', 6);
     }
 
     return join(" ", $runs);
@@ -226,12 +225,12 @@ function run_upgrade($em, $db_version)
 
 return function (App $app) {
     $app->get('/admin/install', function (Request $request, Response $response, $args) {
-        $em = $this->get(EntityManager::class);
+        $conn = $this->get(Connection::class);
 
-        $schemaManager = $em->getConnection()->getSchemaManager();
+        $schemaManager = $conn->getSchemaManager();
         if ($schemaManager->tablesExist(array('app_info')) != true) {
-            run($em, 'v1', 1);
-            run_upgrade($em, 1);
+            run($conn, 'v1', 1);
+            run_upgrade($conn, 1);
         }
 
         $response->getBody()->write("Ok.");
@@ -239,17 +238,17 @@ return function (App $app) {
     });
 
     $app->get('/admin/upgrade', function (Request $request, Response $response, $args) {
-        $em = $this->get(EntityManager::class);
+        $conn = $this->get(Connection::class);
 
-        $schemaManager = $em->getConnection()->getSchemaManager();
+        $schemaManager = $conn->getSchemaManager();
         if ($schemaManager->tablesExist(array('user')) != true || $schemaManager->tablesExist(array('app_info')) != true) {
             return;
         }
 
-        $db_version = $em->getConnection()->query('select db_version from app_info where app_info.id = 1')
+        $db_version = $conn->query('select db_version from app_info where app_info.id = 1')
             ->fetchAll()[0]['db_version'];
 
-        $runs_str = run_upgrade($em, $db_version);
+        $runs_str = run_upgrade($conn, $db_version);
 
         $res_txt = "There is no database upgrade";
         if (!empty($runs_str)) {
