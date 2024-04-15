@@ -174,6 +174,35 @@ function v6($conn)
     $conn->executeQuery($q1);
 }
 
+function v7($conn)
+{
+    $q1 = "
+    CREATE TABLE `photo` (
+        `id` int NOT NULL,
+        `filename` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+        `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+        `date` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+        `slideshow` tinyint(1) NOT NULL,
+        `last_modification` datetime DEFAULT NULL,
+        `created` datetime DEFAULT NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    ";
+
+    $q2 = "
+    ALTER TABLE `photo`
+    ADD PRIMARY KEY (`id`);
+    ";
+
+    $q3 = "
+    ALTER TABLE `photo`
+    MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+    ";
+
+    $conn->executeQuery($q1);
+    $conn->executeQuery($q2);
+    $conn->executeQuery($q3);
+}
+
 
 function update_db_version($conn, int $ver)
 {
@@ -202,7 +231,7 @@ function run_upgrade($conn, $db_version)
 {
     $runs = [];
 
-    $last_version = 6;
+    $last_version = 7;
     if ($db_version >= 1  && $db_version < $last_version) {
         foreach (range($db_version + 1, $last_version) as $ver) {
             array_push($runs, "v{$ver}");
