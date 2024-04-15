@@ -1,0 +1,66 @@
+{% extends "admin/dashboard-base.html" %}
+
+{% block head %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        var table = $('#table').DataTable({
+            order: [['id', 'desc']],
+            ajax: {
+                url: '/api/get-photos',
+                dataSrc: 'content'
+            },
+            columns: [
+                { data: 'id', 'visible': false },
+                { data: 'filename' },
+                { data: 'date' },
+                { data: 'slideshow' },
+                {
+                    data: null,
+                    defaultContent: '<button class="btn btn-sm btn-info edit-btn">edit</button>',
+                    targets: -1
+                },
+                {
+                    data: null,
+                    defaultContent: '<span tabindex="0" class="btn btn-sm btn-light" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true">preview</span>',
+                    targets: -1
+                }
+            ]
+        });
+
+        
+
+        $('#table').on('click', 'button', function () {
+            var data = table.row($(this).parents('tr')).data();
+            window.location.replace("/admin/link-edit/" + data['id']);
+        });
+
+        $('#table').on('draw.dt', function () {
+            const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+            popoverTriggerList.forEach(element => {
+                var data = table.row($(element).parents('tr')).data();
+                $(element).attr(`data-bs-content', "<img src='/media/gallery/${data['filename']}' width='200'/>`);
+            });
+            const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+        });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div>
+    <a class="btn btn-secondary" role="button" href="/admin/photo-create">New Photo</a>
+
+    <hr />
+
+    <table id="table" class="table table-bordered table-striped" width="100%">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Filename</th>
+                <th>Date</th>
+                <th>Slideshow</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+{% endblock %}

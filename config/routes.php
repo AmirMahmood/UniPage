@@ -20,6 +20,7 @@ return function (App $app) {
         $group->get('/links', 'UniPage\Controller\LinkController:site_links_page');
         $group->get('/people', 'UniPage\Controller\UserController:site_people_page');
         $group->get('/alumni', 'UniPage\Controller\UserController:site_alumni_page');
+        $group->get('/gallery', 'UniPage\Controller\PhotoController:site_gallery_page');
     });
 
     $app->group('/admin', function (RouteCollectorProxy $group) {
@@ -35,9 +36,19 @@ return function (App $app) {
         $group->get('/users', 'UniPage\Controller\UserController:admin_users_list_page');
         $group->get('/user-create', 'UniPage\Controller\UserController:admin_user_create_page');
         $group->get('/user-edit/{id:[0-9]+}', 'UniPage\Controller\UserController:admin_user_edit_page');
+        # photos
+        $group->get('/photos', 'UniPage\Controller\PhotoController:admin_photos_list_page');
+        $group->get('/photo-create', 'UniPage\Controller\PhotoController:admin_photo_create_page');
+        $group->get('/photo-edit/{id:[0-9]+}', 'UniPage\Controller\PhotoController:admin_photo_edit_page');
     })->add(Guard::class)->add(new LoginMiddleware($app->getContainer()));
 
     $app->group('/api', function (RouteCollectorProxy $group) {
+        # photos
+        $group->get('/get-photos', 'UniPage\Controller\PhotoController:get_photos_list');
+        $group->get('/get-photo/{id:[0-9]+}', 'UniPage\Controller\PhotoController:get_photo');
+        $group->post('/delete-photo/{id:[0-9]+}', 'UniPage\Controller\PhotoController:delete_photo');
+        $group->post('/create-photo', 'UniPage\Controller\PhotoController:create_photo');
+        $group->post('/update-photo', 'UniPage\Controller\PhotoController:update_photo');
         # publications
         $group->get('/get-publications', 'UniPage\Controller\PublicationController:get_publications_list');
         $group->get('/get-publication/{id:[0-9]+}', 'UniPage\Controller\PublicationController:get_publication');
