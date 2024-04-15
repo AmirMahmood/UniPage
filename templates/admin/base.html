@@ -16,6 +16,10 @@
             height: 100%;
         }
 
+        footer a {
+            text-decoration: none;
+        }
+
         /* alpineJS x-cloak css*/
         [x-cloak] {
             display: none !important;
@@ -26,11 +30,18 @@
     {% endblock base_head %}
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
     <div class="container">
         {% block base_content %}
         {% endblock base_content %}
     </div>
+
+    <footer class="footer mt-auto py-2 bg-light">
+        <div class="container text-center">
+            <small class="text-muted"><a href="https://github.com/AmirMahmood/Unipage"><strong>UniPage</strong></a> By
+                AmirMahmood</small>
+        </div>
+    </footer>
 
     <script src="/static/admin/js/bootstrap.bundle.min.js"></script>
     <script src="/static/admin/js/jquery.min.js"></script>
